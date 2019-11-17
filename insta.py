@@ -5,6 +5,7 @@ from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.common.keys import Keys
 from bs4 import *
 from getpass import getpass
+from threading import Thread
 
 def debug():
     while(True):
@@ -16,6 +17,11 @@ def debug():
         except:
             print('\nBAD CODE\n')
             pass
+def spinner():
+    t = ('|','/','-','\\')
+    for i in t:
+        print('\r',i,end='')
+        time.sleep(0.1)
 
 def login():
     b.get("http://instagram.com/accounts/login")
@@ -53,19 +59,36 @@ def retrieve(data,extra=False):
     b.find_element_by_class_name('wpO6b').click()
     return payload
 
+def fill_followers():
+    global followers
+    followers = retrieve(b.find_elements_by_class_name('g47SY')[1])
+
+def fill_following():
+    global following
+    following = retrieve(b.find_elements_by_class_name('g47SY')[2],extra=True)
+
 if __name__ == '__main__':
+    followers=set()
+    following=set()
     opt = Options()
     opt.headless = True
-    b = webdriver.Firefox(options=opt)
+    #b = webdriver.Firefox(options=opt)
+    b = webdriver.Firefox()
     login()
     print("\nLogged in successfully!\n")
     b.get("http://instagram.com/suhasbk/")
     print("Getting followers list...(may take upto a minute)\n")
-    followers = retrieve(b.find_elements_by_class_name('g47SY')[1])
-    print("Getting following list...(may take upto a minute)\n")
-    following = retrieve(b.find_elements_by_class_name('g47SY')[2],extra=True)
+    t1 = Thread(target=fill_followers)
+    t1.start()
+    while t1.isAlive():
+        spinner()
+    print("\rGetting following list...(may take upto a minute)\n")
+    t2 = Thread(target=fill_following)
+    t2.start()
+    while t2.isAlive():
+        spinner()
     losers = following-followers
-    print(f"Difference = {len(following)} - {len(followers)} = {len(losers)}\nAccounts not following back :\n")
+    print(f"\r\nDifference = {len(following)} - {len(followers)} = {len(losers)}\nAccounts not following back :\n")
     for l in losers:
         print(l)
     b.quit()
