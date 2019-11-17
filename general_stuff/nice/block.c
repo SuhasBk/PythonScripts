@@ -1,0 +1,38 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<mpi.h>
+int main(int argc,char *argv[])
+{
+	int numtasks,rank,dest,source,rc;
+	char inmsg,outmsg='x';
+	int count,tag=1;
+	MPI_Status Stat;
+	MPI_Init(&argc,&argv);
+	MPI_Comm_size(MPI_COMM_WORLD,&numtasks);
+	MPI_Comm_rank(MPI_COMM_WORLD,&rank);
+	if(rank==0)
+	{
+		if(numtasks>2)
+			printf("No. of tasks=%d only 2 nested Ignoring extra..\n",numtasks);
+			dest=1;
+			source=1;
+			 rc=MPI_Send(&outmsg,1,MPI_CHAR,dest,tag,MPI_COMM_WORLD);
+			rc=MPI_Recv(&inmsg,1,MPI_CHAR,source,tag,MPI_COMM_WORLD,&Stat);
+		
+		
+	
+	}
+	else if(rank==1)
+	{
+		dest=0;
+		source=0;
+		rc=MPI_Send(&outmsg,1,MPI_CHAR,dest,tag,MPI_COMM_WORLD);
+		rc=MPI_Recv(&inmsg,1,MPI_CHAR,source,tag,MPI_COMM_WORLD,&Stat);
+	}
+	if(rank<2)
+	{
+		rc=MPI_Get_count(&Stat,MPI_CHAR,&count);
+		printf("Task %d received %c char(s) from task %d with tag %d \n",rank,inmsg,Stat.MPI_SOURCE,Stat.MPI_TAG,inmsg);
+	}
+	MPI_Finalize();
+}

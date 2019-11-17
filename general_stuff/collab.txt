@@ -1,0 +1,17 @@
+1) Fork a repo into your account
+2) Clone the forked repo
+3) Add upstream remote : git remote add upstream https://github.com/UPSTREAM-USER/ORIGINAL-PROJECT.git
+4) Verify : git remote -v
+5) Fetch from upstream : git fetch upstream
+6) View all branches : git branch -va
+7) Sync with original repo : git merge upstream/master
+8) AFTER MAKING CHANGES, PULL REQUEST AND WAIT THEM TO MERGE
+
+HEROKU setup:
+1) vi Procfile > web: gunicorn app : [app_name]
+2) git init
+3) heroku login
+4) heroku git:remote -a [app_name]
+5) git add -A;git commit;
+6) git push heroku master
+7) DONE!
