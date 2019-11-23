@@ -72,25 +72,25 @@ if __name__ == '__main__':
     following=set()
     opt = Options()
     opt.headless = True
-    #b = webdriver.Firefox(options=opt)
-    b = webdriver.Firefox()
+    b = webdriver.Firefox(options=opt)
+    #b = webdriver.Firefox()
     login()
     print("\nLogged in successfully!\n")
     b.get("http://instagram.com/suhasbk/")
-    print("Getting followers list...(may take upto a minute)\n")
+
+    print("Getting followers and following list...(may take upto 2 minutes)\n")
     t1 = Thread(target=fill_followers)
-    t1.start()
-    while t1.isAlive():
-        spinner()
-    print("\rGetting following list...(may take upto a minute)\n")
     t2 = Thread(target=fill_following)
+    t1.start()
     t2.start()
-    while t2.isAlive():
+    while t1.isAlive() or t2.isAlive():
         spinner()
+
     losers = following-followers
-    print(f"\r\nDifference = {len(following)} - {len(followers)} = {len(losers)}\nAccounts not following back :\n")
+    print("\rAccounts not following back :\n")
     for l in losers:
         print(l)
+        
     b.quit()
     try:
         os.remove('geckodriver.log')
