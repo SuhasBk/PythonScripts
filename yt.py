@@ -73,7 +73,7 @@ while True:
             elif dorv == 'v':
                 print("Streaming...")
                 try:
-                    Popen(['mpv',"--ytdl-format=bestvideo+bestaudio/best",j,"--autofit","640x480"],close_fds=True,stderr=PIPE,stdout=PIPE)
+                    Popen(['mpv',"--ytdl-format=bestvideo+bestaudio/best",j,"--autofit","1366x768"],close_fds=True,stderr=PIPE,stdout=PIPE)
                 except FileNotFoundError:
                     Popen([input("Enter your default media player...\nEx: 'mpv','totem','vlc' : "),j],stderr=PIPE,stdout=PIPE,close_fds=True)
         elif ch=='exit':

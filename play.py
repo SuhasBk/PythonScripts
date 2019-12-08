@@ -3,8 +3,8 @@ import os,sys,time
 from subprocess import *
 
 def list_songs():
-    global dir,songs
-    a = input("\nTell me child, what do you seek in your music directory?\n")
+    global directory,songs
+    a = input("\nTell me child, what do you seek in your music directoryectory?\n")
     print("SONG ID - SONG NAME")
     for i,j in enumerate(songs):
         if a == 'exit':
@@ -15,10 +15,10 @@ def list_songs():
     add_to_playlist(choice)
 
 def add_to_playlist(choice):
-    global playlist,dir,songs
+    global playlist,directory,songs
     for q,p in enumerate(songs):
         if(choice==str(q)):
-            playlist.add(os.path.join(dir,p))
+            playlist.add(os.path.join(directory,p))
             print("\nAdded '{}' to playlist...".format(p))
 
             print(f"Current playlist size : {len(playlist)}\nCurrent playlist songs : {playlist}")
@@ -49,12 +49,12 @@ def handler():
             exit('bye')
 
 if __name__ == '__main__':
-    if os.environ.get('USER') == 'dexter' or os.environ.get('USER') == 'gandalf':
-        dir = '/mnt/Universe/music/'
+    if sys.platform == 'linux':
+        directory = '/mnt/Universe/music/'
     elif 'win' in sys.platform.lower():
-        dir = 'E:\\music'
-
-    songs = os.listdir(dir)
+        directory = 'E:\\music'
+    
+    songs = os.listdir(directory)
     playlist = set()
 
     handler()
