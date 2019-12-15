@@ -53,7 +53,7 @@ if __name__ == '__main__':
         directory = '/mnt/Universe/music/'
     elif 'win' in sys.platform.lower():
         directory = 'E:\\music'
-    
+
     songs = os.listdir(directory)
     playlist = set()
 
