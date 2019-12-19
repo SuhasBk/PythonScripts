@@ -4,7 +4,7 @@ from subprocess import *
 
 def list_songs():
     global directory,songs
-    a = input("\nTell me child, what do you seek in your music directoryectory?\n")
+    a = input("\nTell me child, what do you seek in your music directory?\n")
     print("SONG ID - SONG NAME")
     for i,j in enumerate(songs):
         if a == 'exit':
