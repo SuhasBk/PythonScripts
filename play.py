@@ -54,7 +54,15 @@ if __name__ == '__main__':
     elif 'win' in sys.platform.lower():
         directory = 'E:\\music'
 
-    songs = os.listdir(directory)
+    try:
+        songs = os.listdir(directory)
+    except:
+        directory = input("Enter the path to your music directory\n> ")
+        try:
+            songs = os.listdir(directory)
+        except:
+            exit("The path entered is incorrect.. please try again!")
+
     playlist = set()
 
     handler()
