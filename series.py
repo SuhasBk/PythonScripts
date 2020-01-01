@@ -21,6 +21,12 @@ for i,j in enumerate(series_list):
 
         for k,l in enumerate(season_list[:]):
             if se==k:
-                episode_list = list(filter(lambda x : '.mkv' in x or '.mp4' in x,os.listdir(os.path.join(DIR,j,l))))
-                e = os.path.join(DIR,j,l,episode_list[0])
-                Popen(["vlc",e],stdout=PIPE,stderr=PIPE)
+                f = os.path.join(DIR,j,l)
+
+                if os.path.isdir(f):
+                    episode_list = list(filter(lambda x : '.mkv' in x or '.mp4' in x,os.listdir(os.path.join(DIR,j,l))))
+                    e = os.path.join(DIR,j,l,episode_list[0])
+                    Popen(["vlc",e],stdout=PIPE,stderr=PIPE)
+
+                elif os.path.isfile(f):
+                    Popen(["vlc",f],stdout=PIPE,stderr=PIPE)
