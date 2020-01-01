@@ -27,7 +27,7 @@ def search():
     for i,j in enumerate(t,1):
         print(i,j.text)
 
-    ch = eval(input("Enter your choice\n"))
+    ch = int(input("Enter your choice\n"))
 
     for i,j in enumerate(t1,1):
         if ch==i:
