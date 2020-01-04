@@ -4,6 +4,7 @@ from subprocess import *
 
 def list_songs():
     global directory,songs
+    songs = os.listdir(directory)
     a = input("\nTell me child, what do you seek in your music directory?\n")
     print("SONG ID - SONG NAME")
     for i,j in enumerate(songs):
@@ -49,18 +50,16 @@ def handler():
             exit('bye')
 
 if __name__ == '__main__':
+    songs = []
+
     if sys.platform == 'linux':
         directory = '/mnt/Universe/music/'
     elif 'win' in sys.platform.lower():
         directory = 'E:\\music'
 
-    try:
-        songs = os.listdir(directory)
-    except:
+    if not os.path.isdir(directory):
         directory = input("Enter the path to your music directory\n> ")
-        try:
-            songs = os.listdir(directory)
-        except:
+        if not os.path.isdir(directory):
             exit("The path entered is incorrect.. please try again!")
 
     playlist = set()
