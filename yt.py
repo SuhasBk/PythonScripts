@@ -19,7 +19,7 @@ except requests.HTTPError as err:
 
 print("Searching....")
 s = BeautifulSoup(r.text, 'html.parser')
-l = s.select('div .yt-lockup-content')
+l = s.findAll('div',{'class':'yt-lockup-content'})
 
 urls = []
 titles = []
@@ -58,6 +58,8 @@ for i,t,up,d,v,ur,us in zip(range(5),titles,uploaded,durations,views,urls,upload
 
 while True:
     ch=input("Enter the number corresponding to the link (type 'exit' to quit)- \n")
+    if ch=='exit':
+        exit('bye')
     for i,j in enumerate(urls):
         if ch==str(i):
             print(j)
@@ -76,5 +78,3 @@ while True:
                     Popen(['mpv',"--ytdl-format=bestvideo+bestaudio/best",j,"--autofit","1366x768"],close_fds=True,stderr=PIPE,stdout=PIPE)
                 except FileNotFoundError:
                     Popen([input("Enter your default media player...\nEx: 'mpv','totem','vlc' : "),j],stderr=PIPE,stdout=PIPE,close_fds=True)
-        elif ch=='exit':
-            exit('bye')
