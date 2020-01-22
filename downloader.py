@@ -10,8 +10,12 @@ except:
     url = input("Enter the HTTP URL of a file:\n> ")
     fname = input("Enter the file name/path without extension:\n> ")
 
-ext = url[url.rfind('.'):]
-fname+=ext
+pos = url.rfind('.')
+if pos!=-1:
+    ext = url[url.rfind('.'):]
+    fname+=ext
+else:
+    exit("URL should point to a specific file on the internet...Please check and try again...")
 
 r = requests.get(url)
 if r.ok:
