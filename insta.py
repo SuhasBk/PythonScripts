@@ -5,7 +5,6 @@ from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.common.keys import Keys
 from bs4 import *
 from getpass import getpass
-from threading import Thread
 
 def debug():
     while(True):
@@ -17,6 +16,7 @@ def debug():
         except:
             print('\nBAD CODE\n')
             pass
+
 def spinner():
     t = ('|','/','-','\\')
     for i in t:
@@ -39,15 +39,18 @@ def login():
             pass
 
 def retrieve(data,extra=False):
-    data.click()
+    b.execute_script("arguments[0].click();",data)
     payload = set()
     time.sleep(2)
     k = b.find_element_by_class_name('isgrP')
     k.click()
 
-    for i in range(500):
+    for i in range(300):
         time.sleep(0.1)
-        k.send_keys(Keys.DOWN)
+        try:
+            k.send_keys(Keys.DOWN)
+        except:
+            pass
 
     s = BeautifulSoup(b.page_source,'html.parser')
     f = s.findAll('a',attrs={'class':'_0imsa'})
@@ -56,7 +59,11 @@ def retrieve(data,extra=False):
             if 'verified' in i.find_all_next()[0].text.lower():
                 continue
         payload.add(i.text)
-    b.find_element_by_class_name('wpO6b').click()
+
+    try:
+        b.find_element_by_class_name('wpO6b').click()
+    except:
+        debug()
     return payload
 
 def fill_followers():
@@ -67,32 +74,51 @@ def fill_following():
     global following
     following = retrieve(b.find_elements_by_class_name('g47SY')[2],extra=True)
 
+def log_out():
+    try:
+        b.execute_script("arguments[0].click();",b.find_element_by_class_name('dCJp8'))
+        options = b.find_element_by_class_name('mt3GC')
+        log_out_button = options.find_elements_by_tag_name('button')[8]
+        b.execute_script("arguments[0].click();",log_out_button)
+        return True
+    except:
+        return False
+
 if __name__ == '__main__':
-    followers=set()
-    following=set()
+    followers = set()
+    following = set()
     opt = Options()
     opt.headless = True
-    b = webdriver.Firefox(options=opt)
-    #b = webdriver.Firefox()
-    login()
-    print("\nLogged in successfully!\n")
-    b.get("http://instagram.com/suhasbk/")
 
-    print("Getting followers and following list...(may take upto 2 minutes)\n")
-    t1 = Thread(target=fill_followers)
-    t2 = Thread(target=fill_following)
-    t1.start()
-    t2.start()
-    while t1.isAlive() or t2.isAlive():
-        spinner()
+    if sys.platform == 'linux':
+        log_path = '/dev/null'
+    else:
+        log_path = 'NUL'
 
-    losers = following-followers
-    print("\rAccounts not following back :\n")
-    for l in losers:
-        print(l)
-        
-    b.quit()
+    if len(sys.argv) > 1:
+        print("Debug mode ON")
+        b = webdriver.Firefox(service_log_path=log_path)
+    else:
+        b = webdriver.Firefox(options=opt,service_log_path=log_path)
+
     try:
-        os.remove('geckodriver.log')
-    except:
-        pass
+        login()
+        print("\nLogged in successfully!\n")
+        b.get("http://instagram.com/suhasbk/")
+
+        print("Getting followers and following list...(may take upto 2 minutes)\n")
+
+        fill_followers()
+        fill_following()
+
+        losers = following-followers
+        print("\rAccounts not following back :\n")
+        for l in losers:
+            print(l)
+    finally:
+        if log_out()==True:
+            print("Logged out successfully")
+            b.quit()
+        else:
+            print("Log out operation aborted!")
+            debug()
