@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+from getpass import getpass
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 import time,os,sys
@@ -30,8 +31,8 @@ except:
 
 
 def do():
-    b.find_element_by_id('userName').send_keys('admin')
-    b.find_element_by_id('pcPassword').send_keys(input("Enter the router password...\n> ")+Keys.ENTER)
+    b.find_element_by_id('userName').send_keys(getpass("Enter the router username...\n> "))
+    b.find_element_by_id('pcPassword').send_keys(getpass("Enter the router password...\n> ")+Keys.ENTER)
     time.sleep(5)
 
     found = False
