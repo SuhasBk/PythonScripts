@@ -97,10 +97,10 @@ def sms():
 def backdoor():
     while True:
         print('\nWelcome to bakcdoor entry...\n')
-        cmd=input("Enter the ADB shell command... without 'adb shell' in the command\n")
-        if cmd=='exit':
+        cmd = input("Enter the ADB shell command... without 'adb shell' in the command\n")
+        if cmd == 'exit':
             return
-        os.system(cmd)
+        call(f"adb shell {cmd}")
 
 def cya():
     exit("BYE\n")
@@ -116,7 +116,7 @@ else:
         print(l)
         exit("Please answer the goddamn question!".upper())
 
-    func=['SEND SMS','PLACE A CALL','TOGGLE NETWORK STATUS','RANDOM ACTIONS','LOCK SCREEN','UNLOCK SCREEN','CUSTOM COMMANDS','EXIT']
+    func=['SEND SMS','PLACE A CALL','TOGGLE NETWORK STATUS','RANDOM ACTIONS','LOCK SCREEN','UNLOCK SCREEN','CUSTOM ADB COMMANDS','EXIT']
 
     routes = {0:sms,1:tel,2:network,3:rand,4:lock,5:unlock,6:backdoor,7:cya}
 
