@@ -1,32 +1,66 @@
 #!/usr/bin/python3
-import requests,sys,shutil,os,re
+import selenium,sys,os,shutil,re,requests
+from subprocess import *
+from threading import Thread
 from bs4 import *
-from PIL import Image
+from selenium import webdriver
+from selenium.webdriver.firefox.options import Options
+from selenium.webdriver.common.keys import Keys
 
-if len(sys.argv[1:])==0:
-    search_term = input("What do you want to see?\n> ")
-else:
-    search_term = '_'.join(sys.argv[1:])
+browser = None
+cmd = None
 
-os.mkdir(search_term)
-os.chdir(search_term)
+def init():
+    global browser
+    global cmd
+    options = Options()
+    options.headless = True
 
-headers = {'User-Agent':'Mozilla/5.0 (X11; Linux x86_64; rv:10.0) Gecko/20100101 Firefox/10.0'}
-r = requests.get("https://www.google.com/search?tbm=isch&q={}".format(search_term),headers=headers)
-s = BeautifulSoup(r.text,'html.parser')
+    if 'linux' in sys.platform:
+        cmd = "browse"
+        if len(sys.argv[1:]) >= 1:
+            print("Debug mode on...")
+            browser = webdriver.Firefox(service_log_path='/dev/null')
+        else:
+            browser = webdriver.Firefox(options=options,service_log_path='/dev/null')
+    else:
+        cmd = "start"
+        if len(sys.argv[1:]) >= 1:
+            print("Debug mode on...")
+            browser = webdriver.Firefox(service_log_path='NUL')
+        else:
+            browser = webdriver.Firefox(options=options,service_log_path='NUL')
 
-images = s.findAll('img',attrs={'data-src':re.compile(r'[\w+]')})
+def fetch(search_term):
+    global browser
+    browser.get(f"https://www.google.com/search?tbm=isch&q={search_term}")
 
-try:
-    for i in images[:5]:
-        #print(i)
-        input("Press 'enter' to see images...\n")
+    source = BeautifulSoup(browser.page_source,'html.parser')
+    browser.quit()
+
+    images = source.findAll('img',attrs={'data-src':re.compile(r'[\w+]')})
+
+    for i in images[:int(len(images)*0.15)]:
         url = i.get('data-src')
+
         im = requests.get(url)
         path = 'img{}.jpg'.format(images.index(i))
         with open(path,"wb+") as f:
             f.write(im.content)
-        img = Image.open(path)
-        img.show()
-finally:
-    shutil.rmtree(os.getcwd())
+
+        p = Popen([cmd,path])
+        input("Press 'enter' to see next image...\n")
+
+if __name__ == '__main__':
+    t = Thread(target=init)
+    t.start()
+
+    search_term = input("Enter the search term\n> ")
+    os.mkdir(search_term)
+    os.chdir(search_term)
+
+    try:
+        fetch(search_term)
+    finally:
+        shutil.rmtree(os.getcwd())
+        exit("Thank you for using!")
