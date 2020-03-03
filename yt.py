@@ -29,20 +29,26 @@ views = []
 uploaders = []
 
 for i in l:
-    urls.append('http://youtube.com'+i.get('href'))
-    titles.append(i.text)
-    durations.append(re.findall('\w+:\w+',i.parent.text)[0])
-    meta = i.parent.parent.find('ul',{'class':'yt-lockup-meta-info'}).findAll('li')
-    uploaded.append(meta[0].text)
-    views.append(meta[1].text)
-    uploaders.append(i.parent.parent.find('div',{'class':"yt-lockup-byline"}).text)
+    try:
+        urls.append('http://youtube.com'+i.get('href'))
+        titles.append(i.text)
+        durations.append(re.findall('\w+:\w+',i.parent.text)[0])
+        meta = i.parent.parent.find('ul',{'class':'yt-lockup-meta-info'}).findAll('li')
+        uploaded.append(meta[0].text)
+        views.append(meta[1].text)
+        uploaders.append(i.parent.parent.find('div',{'class':"yt-lockup-byline"}).text)
+    except:
+        pass
 
 for i,t,up,d,v,ur,us in zip(range(5),titles,uploaded,durations,views,urls,uploaders):
-    p = requests.get(ur)
-    q = BeautifulSoup(p.text,'html.parser')
-    likes = q.find('button',{'title':'I like this'}).text
-    dislikes = q.find('button',{'title':'I dislike this'}).text
-    print('<<< '+str(i)+' >>> : '+t+'\nYouTube URL\t:\t'+ur+'\nUPLOADED\t:\t'+up+'\nDURATION\t:\t'+d+'\nVIEWS\t\t:\t'+v+'\nLIKES\t\t:\t'+likes+'\nDISLIKES\t:\t'+dislikes+'\nUPLOADER\t:\t'+us+'\n')
+    try:
+        p = requests.get(ur)
+        q = BeautifulSoup(p.text,'html.parser')
+        likes = q.find('button',{'title':'I like this'}).text
+        dislikes = q.find('button',{'title':'I dislike this'}).text
+        print('<<< '+str(i)+' >>> : '+t+'\nYouTube URL\t:\t'+ur+'\nUPLOADED\t:\t'+up+'\nDURATION\t:\t'+d+'\nVIEWS\t\t:\t'+v+'\nLIKES\t\t:\t'+likes+'\nDISLIKES\t:\t'+dislikes+'\nUPLOADER\t:\t'+us+'\n')
+    except:
+        pass
 
 
 while True:

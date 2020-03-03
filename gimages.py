@@ -18,18 +18,10 @@ def init():
 
     if 'linux' in sys.platform:
         cmd = "browse"
-        if len(sys.argv[1:]) >= 1:
-            print("Debug mode on...")
-            browser = webdriver.Firefox(service_log_path='/dev/null')
-        else:
-            browser = webdriver.Firefox(options=options,service_log_path='/dev/null')
+        browser = webdriver.Firefox(options=options,service_log_path='/dev/null')
     else:
         cmd = "start"
-        if len(sys.argv[1:]) >= 1:
-            print("Debug mode on...")
-            browser = webdriver.Firefox(service_log_path='NUL')
-        else:
-            browser = webdriver.Firefox(options=options,service_log_path='NUL')
+        browser = webdriver.Firefox(options=options,service_log_path='NUL')
 
 def fetch(search_term):
     global browser
@@ -52,15 +44,23 @@ def fetch(search_term):
         input("Press 'enter' to see next image...\n")
 
 if __name__ == '__main__':
-    t = Thread(target=init)
-    t.start()
-
-    search_term = input("Enter the search term\n> ")
-    os.mkdir(search_term)
-    os.chdir(search_term)
-
+    if len(sys.argv[1:]) > 0:
+        search_term = '+'.join(sys.argv[1:])
+    else:
+        search_term = input("Enter the search term\n> ")
+        
     try:
+        t = Thread(target=init)
+        t.start()
+
+        if t.isAlive():
+            print(f"Searching for {search_term}...")
+            t.join()
+
+        os.mkdir(search_term)
+        os.chdir(search_term)
         fetch(search_term)
     finally:
-        shutil.rmtree(os.getcwd())
+        os.chdir("..")
+        shutil.rmtree(search_term)
         exit("Thank you for using!")

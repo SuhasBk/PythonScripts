@@ -6,7 +6,8 @@ from selenium.webdriver.common.keys import Keys
 from bs4 import *
 from getpass import getpass
 
-def debug():
+def debug(msg=""):
+    print(f"\nCaught exception : {msg}\n")
     while(True):
         try:
             cmd=input("Enter the debugging commands...\n")
@@ -43,7 +44,7 @@ def retrieve(data,extra=False):
     payload = set()
     time.sleep(2)
     k = b.find_element_by_class_name('isgrP')
-    k.click()
+    b.execute_script("arguments[0].click()",k)
 
     for i in range(300):
         time.sleep(0.1)
@@ -60,10 +61,9 @@ def retrieve(data,extra=False):
                 continue
         payload.add(i.text)
 
-    try:
-        b.find_element_by_class_name('wpO6b').click()
-    except:
-        debug()
+    close_button = b.find_element_by_class_name('wpO6b')
+    b.execute_script("arguments[0].click()",close_button)
+
     return payload
 
 def fill_followers():
@@ -75,14 +75,10 @@ def fill_following():
     following = retrieve(b.find_elements_by_class_name('g47SY')[2],extra=True)
 
 def log_out():
-    try:
-        b.execute_script("arguments[0].click();",b.find_element_by_class_name('dCJp8'))
-        options = b.find_element_by_class_name('mt3GC')
-        log_out_button = options.find_elements_by_tag_name('button')[8]
-        b.execute_script("arguments[0].click();",log_out_button)
-        return True
-    except:
-        return False
+    b.execute_script("arguments[0].click();",b.find_element_by_class_name('wpO6b'))
+    options = b.find_element_by_class_name('mt3GC')
+    log_out_button = options.find_elements_by_tag_name('button')[8]
+    b.execute_script("arguments[0].click();",log_out_button)
 
 if __name__ == '__main__':
     followers = set()
@@ -101,24 +97,18 @@ if __name__ == '__main__':
     else:
         b = webdriver.Firefox(options=opt,service_log_path=log_path)
 
-    try:
-        login()
-        print("\nLogged in successfully!\n")
-        b.get("http://instagram.com/suhasbk/")
+    login()
+    print("\nLogged in successfully!\n")
+    b.get("http://instagram.com/suhasbk/")
 
-        print("Getting followers and following list...(may take upto 2 minutes)\n")
+    print("Getting followers and following list...(may take upto 2 minutes)\n")
 
-        fill_followers()
-        fill_following()
+    fill_followers()
+    fill_following()
 
-        losers = following-followers
-        print("\rAccounts not following back :\n")
-        for l in losers:
-            print(l)
-    finally:
-        if log_out()==True:
-            print("Logged out successfully")
-            b.quit()
-        else:
-            print("Log out operation aborted!")
-            debug()
+    losers = following-followers
+    print("\rAccounts not following back :\n")
+    for l in losers:
+        print(l)
+
+    log_out()
