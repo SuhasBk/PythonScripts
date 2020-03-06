@@ -4,7 +4,7 @@ from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 import time,os,sys
 from selenium.webdriver.firefox.options import Options
-from selenium.webdriver.chrome.options import Options
+#from selenium.webdriver.chrome.options import Options
 
 def debug():
     while(True):
@@ -20,9 +20,9 @@ def debug():
 options=Options()
 options.headless=True
 if len(sys.argv[1:]) < 1:
-    b = webdriver.Chrome(options=options)
+    b = webdriver.Firefox(options=options)
 else:
-    b = webdriver.Chrome()
+    b = webdriver.Firefox()
 try:
     b.get('http://192.168.0.1')
 except:
