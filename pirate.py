@@ -1,8 +1,8 @@
 #!/usr/bin/python3
 import requests,sys
-from bs4 import *
+from bs4 import BeautifulSoup
 import clipboard
-from subprocess import *
+from subprocess import Popen,PIPE
 
 try:
     if len(sys.argv[1:]) < 1:
@@ -11,7 +11,7 @@ try:
 except IndexError:
     exit("Usage : pirate.py [goods]")
 
-# THE ULTIMATE DATA STRUCTURE IN PYTHON:
+headers = {'User-Agent':'Mozilla/5.0 (X11; Linux x86_64; rv:10.0) Gecko/20100101 Firefox/10.0'}
 data={'uploaders':[],'titles':[],'magnetLinks':[],'webpages':[],'time':[]}
 
 def disp():
@@ -28,15 +28,15 @@ def disp():
     return(data['uploaders'][ch], data['webpages'][ch], data['magnetLinks'][ch])
 
 try:
-    headers = {'User-Agent':'Mozilla/5.0 (X11; Linux x86_64; rv:10.0) Gecko/20100101 Firefox/10.0'}
-    r=requests.get("https://thepiratebay.org/search/"+goods+"/0/99/0",headers=headers)
-except:
-    exit("Service not available right now..")
-
-if 'blocked' in r.text:
-    print("Oops! It appears as if this website is inaccessible... Sorry, mate!")
-    exit()
-
+    print("Trying first server...")
+    r = requests.get("https://thepiratebay.org/search/"+goods+"/0/99/0", headers=headers,timeout=5)
+except requests.exceptions.ReadTimeout:
+    print("Failed!!! trying second server...")
+    r = requests.get("https://pirateproxy.ink/search/"+goods+"/0/99/0",headers=headers)
+    if not r.ok:
+        exit("Servers are down! :(")
+    
+url = r.url[:r.url.find('search')]
 a = BeautifulSoup(r.text,'html.parser').select('a')
 descs = BeautifulSoup(r.text,'html.parser').select('font')
 for desc in descs:
@@ -71,17 +71,15 @@ else:
     exit("Something's wrong nibba!")
 
 try:
-    choice=disp()
-    url = 'https://thepiratebay.org'+choice[1]
-    s=requests.get(url,headers={'user-agent':'random_stuff'})
+    choice = disp()
+    s = requests.get(url+choice[1], headers=headers)
     page = BeautifulSoup(s.text,'html.parser')
     com = page.find('div',attrs={'id':'comments'}).text
     size = page.findAll('dd')[2].text if page.findAll('dd')[2]!=None else 'NaN'
     uploaded = page.find('dl',attrs={'col2'}).find('dd').text if page.find('dl',attrs={'col2'}).find('dd') != None else 'NaN'
-    print('Uploader : '+choice[0]+'\n\nURL : '+url+'\n\nSize : '+size+'\n\nUploaded on : '+uploaded+'\n\nMagnet Link : '+choice[2]+'\n\nComments : \n'+com)
+    print('Uploader : '+choice[0]+'\n\nURL : '+s.url+'\n\nSize : '+size+'\n\nUploaded on : '+uploaded+'\n\nMagnet Link : '+choice[2]+'\n\nComments : \n'+com)
     clipboard.copy(choice[2])
     if sys.platform == 'linux':
         Popen(['qbittorrent',choice[2]],stdout=PIPE,stderr=PIPE,close_fds=True)
-
 except KeyboardInterrupt:
     quit()
