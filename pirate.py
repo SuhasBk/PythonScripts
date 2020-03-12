@@ -14,29 +14,16 @@ except IndexError:
 headers = {'User-Agent':'Mozilla/5.0 (X11; Linux x86_64; rv:10.0) Gecko/20100101 Firefox/10.0'}
 data={'uploaders':[],'titles':[],'magnetLinks':[],'webpages':[],'time':[]}
 
-def disp():
-    for i,j in enumerate(data['titles'][:20]):
-        try:
-            print('\n',i,' - ',j,'\n',data['time'][i])
-        except:
-            pass
-    print('\n')
-    ch=input("Enter the choice ('exit' to quit)\n")
-    if ch=='exit':
-        exit()
-    ch=int(ch)
-    return(data['uploaders'][ch], data['webpages'][ch], data['magnetLinks'][ch])
-
 try:
-    print("Trying first server...")
-    r = requests.get("https://thepiratebay.org/search/"+goods+"/0/99/0", headers=headers,timeout=5)
+    print(f"Searching for {goods}...\nTrying first server...")
+    r = requests.get(f"https://thepiratebay.org/search/{goods}",headers=headers,timeout=5)
 except requests.exceptions.ReadTimeout:
-    print("Failed!!! trying second server...")
-    r = requests.get("https://pirateproxy.ink/search/"+goods+"/0/99/0",headers=headers)
+    print("\nFailed!!! Trying second server...")
+    r = requests.get(f"https://pirateproxy.ink/search/{goods}",headers=headers)
     if not r.ok:
         exit("Servers are down! :(")
     
-url = r.url[:r.url.find('search')]
+url = r.url[:r.url.find('search')-1]
 a = BeautifulSoup(r.text,'html.parser').select('a')
 descs = BeautifulSoup(r.text,'html.parser').select('font')
 for desc in descs:
@@ -65,12 +52,25 @@ def info():
     else:
         return False
 
+def disp():
+    for i, j in enumerate(data['titles'][:20]):
+        try:
+            print('\n', i, ' - ', j, '\n', data['time'][i])
+        except:
+            pass
+    print('\n')
+    ch = input("Enter the choice ('exit' to quit)\n")
+    if ch == 'exit':
+        exit()
+    ch = int(ch)
+    return(data['uploaders'][ch], data['webpages'][ch], data['magnetLinks'][ch])
+
 if(info()):
     pass
 else:
     exit("Something's wrong nibba!")
 
-try:
+while True:
     choice = disp()
     s = requests.get(url+choice[1], headers=headers)
     page = BeautifulSoup(s.text,'html.parser')
@@ -81,5 +81,3 @@ try:
     clipboard.copy(choice[2])
     if sys.platform == 'linux':
         Popen(['qbittorrent',choice[2]],stdout=PIPE,stderr=PIPE,close_fds=True)
-except KeyboardInterrupt:
-    quit()

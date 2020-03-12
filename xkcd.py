@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 import requests
-from bs4 import *
-from subprocess import *
+from bs4 import BeautifulSoup
+from subprocess import run,PIPE
 
 r = requests.get("https://c.xkcd.com/random/comic/",headers={'User-Agent':'Not A Bot!'})
 data = BeautifulSoup(r.text,'html.parser').select('img')[2].get('src')
