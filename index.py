@@ -65,7 +65,7 @@ for i,j in enumerate(l_backup):
                     elif operation == 'v':
                         print(("Streaming... "+link))
                         try:
-                            Popen(['mpv',link],stderr=PIPE,stdout=PIPE,close_fds=True)
+                            Popen(['vlc',link],stderr=PIPE,stdout=PIPE,close_fds=True)
                         except FileNotFoundError:
                             Popen([input("Enter your default media player...\nEx: 'mpv','totem' : "),link],stderr=PIPE,stdout=PIPE,close_fds=True)
         else:

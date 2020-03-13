@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-import requests,sys
+import requests,sys,random
 from bs4 import BeautifulSoup
 import clipboard
 from subprocess import Popen,PIPE
@@ -11,18 +11,32 @@ try:
 except IndexError:
     exit("Usage : pirate.py [goods]")
 
+mirrors = ["thepiratebay.org","pirateproxy.ink","thepiratebay.guru","thepiratebayproxy.info"]
 headers = {'User-Agent':'Mozilla/5.0 (X11; Linux x86_64; rv:10.0) Gecko/20100101 Firefox/10.0'}
-data={'uploaders':[],'titles':[],'magnetLinks':[],'webpages':[],'time':[]}
+data = {'uploaders':[],'titles':[],'magnetLinks':[],'webpages':[],'time':[]}
+r = ''
 
-try:
-    print(f"Searching for {goods}...\nTrying first server...")
-    r = requests.get(f"https://thepiratebay.org/search/{goods}",headers=headers,timeout=5)
-except requests.exceptions.ReadTimeout:
-    print("\nFailed!!! Trying second server...")
-    r = requests.get(f"https://pirateproxy.ink/search/{goods}",headers=headers)
-    if not r.ok:
-        exit("Servers are down! :(")
-    
+def choose_mirror():
+    global mirrors
+    global r
+    mirror = random.choice(mirrors)
+    mirrors.remove(mirror)
+    try:
+        print(f"\nTrying {mirror} ...")
+        r = requests.get(f"http://{mirror}/search/{goods}",headers=headers,timeout=7)
+        if not r.ok or 'blocked' in r.text or r.text == '':
+            raise Exception
+        else:
+            print(f"\nYay! {mirror} is working ...\n")
+            return
+    except:
+        if len(mirrors) > 0:
+            print(f"\n{mirror} not working ... Choosing again from : \n{mirrors}")
+            choose_mirror()
+        else:
+            exit("You have serious bad luck! Bye!")
+        
+choose_mirror()
 url = r.url[:r.url.find('search')-1]
 a = BeautifulSoup(r.text,'html.parser').select('a')
 descs = BeautifulSoup(r.text,'html.parser').select('font')
