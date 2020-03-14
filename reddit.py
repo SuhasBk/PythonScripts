@@ -41,7 +41,7 @@ def results(sub):
                     if 'win' in sys.platform.lower():
                         run(["vlc","--fullscreen",j],stdout=PIPE,stderr=PIPE,close_fds=True)
                     else:
-                        run(["mpv","--fullscreen","--loop",j],stdout=PIPE,stderr=PIPE,close_fds=True)
+                        run(["vlc","--fullscreen","--loop",j],stdout=PIPE,stderr=PIPE,close_fds=True)
                 elif ch=='-1':
                     results(input("Enter the new subreddit\n> "))
                 elif ch=='exit':
