@@ -82,7 +82,7 @@ def disp():
 if(info()):
     pass
 else:
-    exit("Something's wrong nibba!")
+    exit("\nNo results found!")
 
 while True:
     choice = disp()

@@ -6,23 +6,11 @@ import time,os,sys
 from selenium.webdriver.firefox.options import Options
 #from selenium.webdriver.chrome.options import Options
 
-def debug():
-    while(True):
-        try:
-            cmd=input("Enter the commands BOSS!\n")
-            if cmd=='exit':
-                return
-            exec(cmd)
-        except:
-            print('NOT WORKING!')
-            pass
-
 options=Options()
 options.headless=True
-if len(sys.argv[1:]) < 1:
-    b = webdriver.Firefox(options=options)
-else:
-    b = webdriver.Firefox()
+path = '/dev/null' if 'linux' in sys.platform else 'NUL'
+b = webdriver.Firefox(options=options, service_log_path=path) if len(sys.argv[1:]) < 1 else webdriver.Firefox(service_log_path=path)
+
 try:
     b.get('http://192.168.0.1')
 except:
