@@ -26,15 +26,25 @@ class GPod:
     def search(self,pname):
         self.url = f"http://podcasts.google.com/?q={pname}"
         self.browser.get(self.url)
+        time.sleep(2)
+        self.browser.find_element_by_class_name("YJdYTd").click()
+        time.sleep(3)
+
+        self.browser.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+        
+        episodes = self.browser.find_elements_by_class_name('D9uPgd')[::-1]
+        for index,epi in enumerate(episodes,1):
+            if len(epi.text) > 0:
+                print("\n<<< ",str(index)," >>>"' - ',epi.text,'\n')
+        ch = int(input("\nEnter the episode number you want to listen to...\n> "))
+        episodes[ch-1].click()
+        time.sleep(3)
         self.player()
 
     def player(self):
         def time_left():
             print("\n"+self.browser.find_elements_by_class_name('MBPL8b')[1].text+"\n")
 
-        time.sleep(2)
-        self.browser.find_element_by_class_name("LTUrYb").click()
-        time.sleep(3)
         print(f"\nName : {self.browser.find_element_by_class_name('JCi0he').text}")
         print(f"\nDate and duration : {self.browser.find_element_by_class_name('II6i7d').text}")
         print(f"\nDescription : {self.browser.find_element_by_class_name('OoINtf').text}")
