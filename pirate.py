@@ -69,14 +69,15 @@ def info():
 def disp():
     for i, j in enumerate(data['titles'][:20]):
         try:
-            print('\n', i, ' - ', j, '\n', data['time'][i])
+            print('\n', i, ' - ', j, '\n',
+                  data['time'][i], '\n', data['magnetLinks'][i])
         except:
             pass
     print('\n')
     ch = input("Enter the choice ('exit' to quit)\n")
     if ch == 'exit':
         exit()
-    ch = int(ch)
+    ch = int(ch) - 1
     return(data['uploaders'][ch], data['webpages'][ch], data['magnetLinks'][ch])
 
 if(info()):
