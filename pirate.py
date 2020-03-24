@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 import requests,sys,random
 from bs4 import BeautifulSoup
-import clipboard
 from subprocess import Popen,PIPE
 
 try:
@@ -93,6 +92,5 @@ while True:
     size = page.findAll('dd')[2].text if page.findAll('dd')[2]!=None else 'NaN'
     uploaded = page.find('dl',attrs={'col2'}).find('dd').text if page.find('dl',attrs={'col2'}).find('dd') != None else 'NaN'
     print('Uploader : '+choice[0]+'\n\nURL : '+s.url+'\n\nSize : '+size+'\n\nUploaded on : '+uploaded+'\n\nMagnet Link : '+choice[2]+'\n\nComments : \n'+com)
-    clipboard.copy(choice[2])
     if sys.platform == 'linux':
         Popen(['qbittorrent',choice[2]],stdout=PIPE,stderr=PIPE,close_fds=True)

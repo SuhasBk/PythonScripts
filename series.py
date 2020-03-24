@@ -5,7 +5,7 @@ import os,sys
 if sys.platform=='linux':
     DIR = '/mnt/Universe/tv_movies/series'
 else:
-    DIR = r'E:\tv_movies\series'
+    DIR = r'D:\tv_movies\series'
 
 series_list = os.listdir(DIR)
 for i,j in enumerate(series_list[:]):
