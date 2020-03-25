@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-from subprocess import *
+from subprocess import Popen,PIPE
 import os
 import getpass
 import re,time

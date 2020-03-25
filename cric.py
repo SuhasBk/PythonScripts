@@ -1,9 +1,12 @@
 #!/usr/bin/python3
 import requests
-from bs4 import *
+from bs4 import BeautifulSoup
+from fake_useragent import UserAgent
+
+ua = UserAgent()
 
 base_url = "https://www.cricbuzz.com"
-headers = {'User-Agent':'Mozilla/5.0 (X11; Linux x86_64; rv:10.0) Gecko/20100101 Firefox/10.0'}
+headers = {'User-Agent':ua.random}
 
 r = requests.get(base_url+'/cricket-match/live-scores',headers=headers)
 

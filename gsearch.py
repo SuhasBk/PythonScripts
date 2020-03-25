@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 import requests,sys,webbrowser,os,re
 from bs4 import BeautifulSoup
+from fake_useragent import UserAgent
 from markdown import markdown
 
 if len(sys.argv[1:])==0:
@@ -8,7 +9,7 @@ if len(sys.argv[1:])==0:
 else:
     search_term = ' '.join(sys.argv[1:])
 
-headers = {'User-Agent':'Mozilla/5.0 (X11; Linux x86_64; rv:10.0) Gecko/20100101 Firefox/10.0'}
+headers = {'User-Agent':UserAgent().random}
 r = requests.get("https://google.com/search?q={}".format(search_term),headers=headers)
 
 if r.ok!=True:

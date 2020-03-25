@@ -1,9 +1,9 @@
 #!/usr/bin/python3
 
 import requests
-from bs4 import *
+from bs4 import BeautifulSoup
 import webbrowser
-from subprocess import *
+from subprocess import Popen,PIPE
 import sys
 
 try:

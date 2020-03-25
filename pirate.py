@@ -2,6 +2,7 @@
 import requests,sys,random
 from bs4 import BeautifulSoup
 from subprocess import Popen,PIPE
+from fake_useragent import UserAgent
 
 try:
     if len(sys.argv[1:]) < 1:
@@ -11,7 +12,7 @@ except IndexError:
     exit("Usage : pirate.py [goods]")
 
 mirrors = ["thepiratebay.org","pirateproxy.ink","thepiratebay.guru","thepiratebayproxy.info"]
-headers = {'User-Agent':'Mozilla/5.0 (X11; Linux x86_64; rv:10.0) Gecko/20100101 Firefox/10.0'}
+headers = {'User-Agent':UserAgent().random}
 data = {'uploaders':[],'titles':[],'magnetLinks':[],'webpages':[],'time':[]}
 r = ''
 

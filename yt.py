@@ -3,13 +3,14 @@ import re,os,sys
 from subprocess import PIPE,run,Popen
 import requests
 from bs4 import BeautifulSoup
+from fake_useragent import UserAgent
 
 if len(sys.argv[1:])==0:
     search_term = ' '.join(input("Enter the search term\n").split())
 else:
     search_term = ' '.join(sys.argv[1:])
 
-headers = {'User-Agent':'Mozilla/5.0 (X11; Linux x86_64; rv:10.0) Gecko/20100101 Firefox/10.0'}
+headers = {'User-Agent':UserAgent().random}
 
 try:
     r = requests.get("http://youtube.com/results?search_query=" + '+'.join(search_term.split()))

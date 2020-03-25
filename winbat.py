@@ -1,9 +1,9 @@
-from subprocess import *
-from webbrowser import open as browser
+from subprocess import Popen,PIPE
+import webbrowser
 import os
 
 cmd = 'powercfg /batteryreport'.split()
 
 r = Popen(cmd,stdout=PIPE,stderr=PIPE,close_fds=True)
 
-browser(f"file:///{os.getcwd()}/battery-report.html")
+webbrowser.open(f"file:///{os.getcwd()}/battery-report.html")

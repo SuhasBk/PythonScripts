@@ -4,18 +4,17 @@ import os,time,sys
 from getpass import getpass
 from threading import Thread
 from subprocess import run,PIPE
+from fake_useragent import UserAgent
 
 sess = []
 
 def login():
     global sess
-    #username=raw_input("Enter your reddit username\n")
-    username=os.environ.get("REDUSN")
-    #passwd=getpass("Enter the password (hidden)\n")
-    passwd=os.environ.get('REDPWD')
-    user={'user':username,'passwd':passwd,'api_type':'json'}
-    s=requests.Session()
-    s.headers.update({'user-agent':'boom'})
+    username = input("Enter your reddit username\n")
+    passwd = getpass("Enter the password (hidden)\n")
+    user = {'user':username,'passwd':passwd,'api_type':'json'}
+    s = requests.Session()
+    s.headers.update({'User-Agent':UserAgent().random})
     s.post('https://reddit.com/api/login',data=user)
     sess.append(s)
 
@@ -37,14 +36,14 @@ def results(sub):
         try:
             ch = input("Enter the choice ('-1' for new sub)\n")
             for i,j in res:
-                if ch==str(i):
+                if ch == str(i):
                     if 'win' in sys.platform.lower():
                         run(["vlc","--fullscreen",j],stdout=PIPE,stderr=PIPE,close_fds=True)
                     else:
                         run(["vlc","--fullscreen","--loop",j],stdout=PIPE,stderr=PIPE,close_fds=True)
-                elif ch=='-1':
+                elif ch == '-1':
                     results(input("Enter the new subreddit\n> "))
-                elif ch=='exit':
+                elif ch == 'exit':
                     raise KeyboardInterrupt
         except KeyboardInterrupt:
             exit('bye')

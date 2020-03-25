@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 import requests
+from fake_useragent import UserAgent
 import sys
 
 try:
@@ -17,7 +18,7 @@ if pos!=-1:
 else:
     exit("URL should point to a specific file on the internet...Please check and try again...")
 
-r = requests.get(url)
+r = requests.get(url,headers={'User-Agent':UserAgent().random})
 if r.ok:
     open(fname,'wb+').write(r.content)
     exit(f"File saved successfully as/in : {fname}")

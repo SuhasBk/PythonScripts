@@ -22,3 +22,4 @@ pyaudio
 progress
 clipboard
 PyPDF2
+fake-useragent

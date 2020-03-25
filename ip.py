@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 import sys,re
-from subprocess import *
+from subprocess import Popen,PIPE
 
 if sys.platform=='win32':
     op=Popen('ipconfig',stdout=PIPE).communicate()[0]

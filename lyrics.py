@@ -1,10 +1,12 @@
 #!/usr/bin/python3
 import requests
 import re,sys
-from bs4 import *
+from bs4 import BeautifulSoup
+from fake_useragent import UserAgent
 
 def lyrics(song_name):
-    r = requests.get("https://search.azlyrics.com/search.php?q="+'+'.join(song_name.split()),headers={'User-Agent':'MyApp'})
+    headers = {'User-Agent': UserAgent().random}
+    r = requests.get("https://search.azlyrics.com/search.php?q="+'+'.join(song_name.split()),headers=headers)
     s = BeautifulSoup(r.text,'html.parser')
     td = s.findAll('td',attrs={'class':'text-left visitedlyr'})
     res = []
@@ -12,7 +14,8 @@ def lyrics(song_name):
     if len(td) == 0:
         custom = input("No results found for this...Want to try again? (y)\n")
         if custom =='y':
-            lyrics()
+            new_song_name = input("Enter the name of the song\n> ")
+            lyrics(new_song_name)
         else:
             print('\nOkay... returning to main menu...\n')
         return
