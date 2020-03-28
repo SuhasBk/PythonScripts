@@ -2,7 +2,6 @@
 import requests
 import os,time,sys
 from getpass import getpass
-from threading import Thread
 from subprocess import run,PIPE
 from fake_useragent import UserAgent
 
@@ -49,8 +48,6 @@ def results(sub):
             exit('bye')
 
 if __name__ == '__main__':
-    t = Thread(target=login)
-    t.start()
+    login()
     sub = input("Enter a VALID subreddit\n> ")
-    t.join()
     results(sub)
