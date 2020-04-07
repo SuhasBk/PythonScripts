@@ -71,6 +71,6 @@ while True:
             elif dorv == 'v':
                 print("Streaming...")
                 try:
-                    Popen(['vlc',j],close_fds=True,stderr=PIPE,stdout=PIPE)
+                    Popen(['vlc',j],stderr=PIPE,stdout=PIPE)
                 except FileNotFoundError:
                     Popen([input("Enter your default media player...\nEx: 'mpv','totem','vlc' : "),j],stderr=PIPE,stdout=PIPE,close_fds=True)
