@@ -5,35 +5,37 @@ import random
 from bs4 import BeautifulSoup
 from subprocess import Popen, PIPE
 from fake_useragent import UserAgent
+import selenium
+from selenium import webdriver
+from selenium.webdriver.firefox.options import Options
+from threading import Thread
 
-try:
-    if len(sys.argv[1:]) < 1:
-        raise IndexError
-    goods = ' '.join(sys.argv[1:])
-except IndexError:
-    exit("Usage : pirate.py [goods]")
-
-mirrors = ["thepiratebay.org", "pirateproxy.ink",
-           "thepiratebay.guru", "thepiratebayproxy.info"]
+browser = None
+mirrors = ["thepiratebay.org", "pirateproxy.ink","thepiratebay.guru", "thepiratebayproxy.info"]
 headers = {'User-Agent': UserAgent().random}
-data = {'uploaders': [], 'titles': [],
-        'magnetLinks': [], 'webpages': [], 'time': []}
-r = ''
+domain = ""
 
+def init():
+    global browser
+    op = Options()
+    op.headless = True
+    log_path = "/dev/null" if 'linux' in sys.platform.lower() else 'NUL'
+    browser = webdriver.Firefox(firefox_options=op, service_log_path=log_path)
 
 def choose_mirror():
     global mirrors
-    global r
+    global domain
     mirror = random.choice(mirrors)
     mirrors.remove(mirror)
+
     try:
         print(f"\nTrying {mirror} ...")
-        r = requests.get(
-            f"http://{mirror}/search/{goods}", headers=headers, timeout=7)
+        r = requests.get(f"http://{mirror}/search.php?q={goods}", headers=headers, timeout=7)
         if not r.ok or 'blocked' in r.text or r.text == '':
             raise Exception
         else:
             print(f"\nYay! {mirror} is working ...\n")
+            domain = mirror
             return
     except:
         if len(mirrors) > 0:
@@ -42,31 +44,44 @@ def choose_mirror():
         else:
             exit("You have serious bad luck! Bye!")
 
-choose_mirror()
-    
-base_torrent_url = r.url[:r.url.find('search')-1]
-
-torrent_data = { 'title' : [], 'torrent_url' : [] }
-
-d = BeautifulSoup(r.text,'html.parser').findAll('a',{'class':'detLink'})
-
-torrent_data['title'] = list(map(lambda x : x.text, d))
-torrent_data['torrent_url'] = list(map(lambda x : base_torrent_url+x.get('href'), d))
-
-for link in torrent_data['torrent_url'][:10]:
+if __name__ == '__main__':
     try:
-        print("\n<<< "+str(torrent_data['torrent_url'].index(link) + 1)+" >>> : TITLE : ",
-                torrent_data['title'][torrent_data['torrent_url'].index(link)])
-        tp = requests.get(link,headers=headers)
-        s = BeautifulSoup(tp.text,'html.parser')
-        print("SIZE : ",s.find('dl', {'class': 'col1'}).findAll('dd')[2].text)
-        print("UPLOADED ON : ",s.find('dl',{'class':'col2'}).findAll('dd')[0].text)
-        print("UPLOADED BY : ",s.find('dl',{'class':'col2'}).findAll('dd')[1].text)
-        print("MAGENT LINK : ",s.find('div',{'class':'download'}).find('a').get('href'))
-        print("TORRENT PAGE URL : ",tp.url)
-        time.sleep(0.5)
-    except:
-        pass
+        if len(sys.argv[1:]) < 1:
+            raise IndexError
+        goods = ' '.join(sys.argv[1:])
+    except IndexError:
+        exit("Usage : pirate.py [goods]")
 
+    t = Thread(target=init)
+    t.start()
 
+    choose_mirror()
+    base_url = f"http://{domain}"
+
+    if t.isAlive():
+        t.join()
+
+    browser.get(f"{base_url}/search.php?q={goods}")
+    source = browser.page_source
+    browser.quit()
+
+    s = BeautifulSoup(source,'html.parser')
+    links = s.select('li[id="st"]')
+
+    for link in links[:15]:
+        try:
+            print("\n<<< "+str(links.index(link) + 1)+" >>> : TITLE : ",link.select('span a')[2].text)
+            print("TORRENT PAGE URL : ",base_url+link.select('span a')[2].get('href'))
+            print("SIZE : ",link.select('span')[4].text)
+            print("UPLOADED ON : ",link.select('span')[2].text)
+            print("UPLOADED BY : ",link.select('span')[7].text)
+            print("MAGENT LINK : ",link.select('span a')[3].get('href'))
+            time.sleep(0.5)
+        except:
+            pass
+
+    ch = input("\nEnter the number...\n> ")
+    mlink = links[int(ch) - 1].select('span a')[3].get('href')
+
+    Popen(["qbittorrent",mlink],stdout=PIPE,stderr=PIPE)
 
