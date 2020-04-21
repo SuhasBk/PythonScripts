@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 import os,sys,time
-from subprocess import *
+from subprocess import Popen,PIPE
 
 def list_songs():
     global directory,songs
@@ -28,7 +28,7 @@ def add_to_playlist(choice):
 
             if confirm == '1':
                 for song in range(len(playlist)):
-                    Popen(["vlc","--playlist-enqueue","-L",playlist.pop()],close_fds=True,stdout=PIPE,stderr=PIPE)
+                    Popen(["vlc","--playlist-enqueue","-L",playlist.pop()],stdout=PIPE,stderr=PIPE)
 
             elif confirm == '2':
                 ch = input("\nEnter the song number to add to your playlist...\n\nEnter 'exit' to quit:\n> ")

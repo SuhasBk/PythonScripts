@@ -79,6 +79,8 @@ def log_out():
     options = b.find_element_by_class_name('mt3GC')
     log_out_button = options.find_elements_by_tag_name('button')[8]
     b.execute_script("arguments[0].click();",log_out_button)
+    time.sleep(3)
+    b.quit()
 
 if __name__ == '__main__':
     followers = set()
@@ -99,7 +101,10 @@ if __name__ == '__main__':
 
     login()
     print("\nLogged in successfully!\n")
-    b.get("http://instagram.com/suhasbk/")
+
+    time.sleep(2)
+    b.find_element_by_class_name('gmFkV').click()
+    time.sleep(2)
 
     print("Getting followers and following list...(may take upto 2 minutes)\n")
 
