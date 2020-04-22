@@ -24,3 +24,4 @@ clipboard
 PyPDF2
 fake-useragent
 virtualenv
+pyautogui
