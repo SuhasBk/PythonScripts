@@ -37,7 +37,7 @@ class GPod:
             if len(epi.text) > 0:
                 print("\n<<< ",str(index)," >>>"' - ',epi.text,'\n')
         ch = int(input("\nEnter the episode number you want to listen to...\n> "))
-        episodes[ch-1].click()
+        self.browser.execute_script("arguments[0].click()",episodes[ch-1])
         time.sleep(3)
         self.player()
 
@@ -51,13 +51,13 @@ class GPod:
         self.browser.find_element_by_class_name("Cd8jxe").click()
 
         while True:
-            ctrl = input("\n'1' : Play/Pause\n'2' : Rewind 10 seconds\n'3' : Forward 10 seconds\n'4' : Check time left\n'5' : Listen to another podcast\n'6' : Quit\nChoose from above...\n> ")
+            ctrl = input("\n'1' : Play/Pause\n'2' : Rewind 10 seconds\n'3' : Forward 30 seconds\n'4' : Check time left\n'5' : Listen to another podcast\n'6' : Quit\nChoose from above...\n> ")
             if ctrl == '1':
-                self.browser.find_element_by_class_name("Cd8jxe").click()
+                self.browser.execute_script("arguments[0].click()",self.browser.find_element_by_class_name("Cd8jxe"))
             elif ctrl == '2':
-                self.browser.find_elements_by_class_name("U26fgb")[7].click()
+                self.browser.find_element_by_xpath('//div[@aria-label="Rewind 10 seconds"]').click()
             elif ctrl == '3':
-                self.browser.find_elements_by_class_name("U26fgb")[9].click()
+                self.browser.find_element_by_xpath('//div[@aria-label="Fast forward 30 seconds"]').click()
             elif ctrl == '4':
                 time_left()
             elif ctrl == '5':
@@ -67,16 +67,24 @@ class GPod:
                 self.browser.quit()
                 exit("See you again!")
 
+
+def init():
+    global gp
+    gp = GPod()
+
 if __name__ == '__main__':
-    gp = None
-    def init():
-        global gp
-        gp = GPod()
+    try:
+        gp = None
+        
+        t = Thread(target=init)
+        t.start()
+        pname = input("Enter the name of the podcast...\n> ")
+        if t.isAlive():
+            t.join()
 
-    t = Thread(target=init)
-    t.start()
-    pname = input("Enter the name of the podcast...\n> ")
-    if t.isAlive():
-        t.join()
-
-    gp.search(pname)
+        gp.search(pname)
+    finally:
+        try:
+            gp.browser.quit()
+        except:
+            pass
