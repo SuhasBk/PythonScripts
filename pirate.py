@@ -20,7 +20,7 @@ def init():
     op = Options()
     op.headless = True
     log_path = "/dev/null" if 'linux' in sys.platform.lower() else 'NUL'
-    browser = webdriver.Firefox(firefox_options=op, service_log_path=log_path)
+    browser = webdriver.Firefox(options=op, service_log_path=log_path)
 
 def choose_mirror():
     global mirrors
@@ -58,7 +58,7 @@ if __name__ == '__main__':
     choose_mirror()
     base_url = f"http://{domain}"
 
-    if t.isAlive():
+    if t.is_alive():
         t.join()
 
     browser.get(f"{base_url}/search.php?q={goods}")

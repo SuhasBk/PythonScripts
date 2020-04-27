@@ -52,7 +52,7 @@ class GPod:
 
         while True:
             ctrl = input("\n'1' : Play/Pause\n'2' : Rewind 10 seconds\n'3' : Forward 30 seconds\n'4' : Check time left\n'5' : Listen to another podcast\n'6' : Quit\nChoose from above...\n> ")
-            if ctrl == '1':
+            if ctrl == '1' or ctrl.isspace():
                 self.browser.execute_script("arguments[0].click()",self.browser.find_element_by_class_name("Cd8jxe"))
             elif ctrl == '2':
                 self.browser.find_element_by_xpath('//div[@aria-label="Rewind 10 seconds"]').click()
