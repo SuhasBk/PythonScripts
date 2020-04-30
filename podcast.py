@@ -79,7 +79,7 @@ if __name__ == '__main__':
         t = Thread(target=init)
         t.start()
         pname = input("Enter the name of the podcast...\n> ")
-        if t.isAlive():
+        if t.is_alive():
             t.join()
 
         gp.search(pname)
