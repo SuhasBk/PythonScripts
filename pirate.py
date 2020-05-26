@@ -11,7 +11,7 @@ from selenium.webdriver.firefox.options import Options
 from threading import Thread
 
 browser = None
-mirrors = ["thepiratebay.org", "pirateproxy.ink","thepiratebay.guru", "thepiratebayproxy.info"]
+mirrors = ["thepiratebay.org", "pirateproxy.ink"]
 headers = {'User-Agent': UserAgent().random}
 domain = ""
 
@@ -81,7 +81,9 @@ if __name__ == '__main__':
             pass
 
     ch = input("\nEnter the number...\n> ")
+
     mlink = links[int(ch) - 1].select('span a')[3].get('href')
+    print("Opening : ",mlink)
 
     Popen(["qbittorrent",mlink],stdout=PIPE,stderr=PIPE)
 
