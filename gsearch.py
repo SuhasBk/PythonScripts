@@ -2,7 +2,6 @@
 import requests,sys,webbrowser,os,re
 from bs4 import BeautifulSoup
 from fake_useragent import UserAgent
-from markdown import markdown
 
 if len(sys.argv[1:])==0:
     search_term = ' '.join(input("Enter the search term\n").split())
@@ -12,44 +11,11 @@ else:
 headers = {'User-Agent':UserAgent().random}
 r = requests.get("https://google.com/search?q={}".format(search_term),headers=headers)
 
-if r.ok!=True:
+if not r.ok:
     exit("Error encountered.\n Status code : "+str(r.status_code)+"\n"+r.text)
 
 s = BeautifulSoup(r.text,'html.parser')
 links = s.select('.r a')
-head = s.findAll('div',attrs={'class':'kp-header'})
-
-if len(head) !=0 :
-    print('Found an extra header!\n')
-    contents = s.findAll('div',attrs={'class':'i4J0ge'})
-    if len(contents) != 0:
-        for i in contents:
-            s = i.text
-            cor = []
-
-            err = re.findall(r'[a-z][A-Z]',s)
-            for i in err:
-                i = i.replace('','. ').lstrip('. ').rstrip('. ')
-                cor.append(i)
-
-            l=list(zip(err,cor))
-
-            for i in l:
-                s = s.replace(*i)
-            print(s+'\n')
-
-save = input("Do you want to save the search results in a folder? ('y' or 'n')\n")
-save = True if save=='y' else False
-
-if save:
-    dir = '_'.join(search_term.split())
-
-    try:
-        os.mkdir(dir)
-    except OSError:
-        pass
-
-    os.chdir(dir)
 
 results = []
 
@@ -72,8 +38,7 @@ for i in range(0,5):
 
         for k in p:
             print(k.text,'\n')
-            if save:
-                open("{}.html".format(title.upper()),'a+').write(markdown(k.text))
+            
         input("Press 'enter' for next article or 'Ctrl + C' to quit...\n")
 
     except KeyboardInterrupt:
