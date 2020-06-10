@@ -46,11 +46,11 @@ def do():
     time.sleep(1)
     b.switch_to.alert.accept()
     print("Router successfully rebooted!")
-
 try:
     do()
 except:
     print("Task failed successfully")
 finally:
+    time.sleep(10)
     b.quit()
     exit()
