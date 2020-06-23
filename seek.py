@@ -1,5 +1,6 @@
 #!/usr/bin/python3
-import webbrowser,sys
+import webbrowser
+import sys
 
 if len(sys.argv[1:]) < 1:
     search_term = ' '.join(input("Enter the search term\n").split())
