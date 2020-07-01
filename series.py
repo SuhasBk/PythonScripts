@@ -6,6 +6,8 @@ if sys.platform=='linux':
     ROOT_DIR = '/mnt/Universe/tv_movies/series'
 else:
     ROOT_DIR = r'E:\tv_movies\series'
+
+file_filter = lambda x: '.srt' not in x and '.txt' not in x and '.unwanted' not in x
     
 series_list = list(map( lambda x : os.path.join(ROOT_DIR,x),os.listdir(ROOT_DIR)))
 series_list = sorted(list(filter(lambda x : os.path.isdir(x),series_list)))
@@ -18,7 +20,7 @@ ch = int(input("Enter the choice:\n> ")) - 1
 series = os.path.join(ROOT_DIR, series_list[ch])
 
 season_list = sorted(os.listdir(series))
-season_list = list(filter(lambda x: '.srt' not in x and '.txt' not in x, season_list))
+season_list = list(filter(file_filter, season_list))
 
 for p,q in enumerate(season_list,1):
     print(p,' : ',q)
@@ -29,7 +31,7 @@ season = os.path.join(series,season_list[ch])
 
 if os.path.isdir(season):
     episode_list = sorted(os.listdir(season))
-    episode_list = list(filter(lambda x : '.srt' not in x and '.txt' not in x,episode_list))
+    episode_list = list(filter(file_filter, episode_list))
     
     for z,w in enumerate(episode_list,1):
         print(z,' : ',w)
@@ -39,7 +41,7 @@ if os.path.isdir(season):
     episode = os.path.join(season,episode_list[ch])
     
     if os.path.isdir(episode):
-        fname = list ( filter ( lambda x : '.srt' not in x and '.txt' not in x, sorted(os.listdir(episode)) ) )
+        fname = list ( filter ( file_filter, sorted(os.listdir(episode)) ) )
         Popen(["vlc",fname[0]],stdout=PIPE,stderr=PIPE)
     else:
         Popen(["vlc",episode],stdout=PIPE,stderr=PIPE)
