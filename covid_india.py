@@ -36,25 +36,34 @@ if __name__ == '__main__':
     if t.is_alive():
         t.join()
 
-    # Filter state data:
-    states = [data1.index(x) for x in data1 if state in x['state'].lower()]
+    try:
+        # Filter state data:
+        if not data1 or not data2:
+            raise AttributeError
+    except AttributeError:
+        sys.exit("The API is not working...")
+    else:
+        states = [data1.index(x) for x in data1 if state in x['state'].lower()]
 
-    if len(states) == 0:
-        abort('No such state found!')
-    
-    for st in states:
-        state_code = data1[st]['statecode']
-        print(f"\n*** STATE NAME : {data1[st]['state']} ***")
-        state_data = data2[state_code].get('total')
-        
-        if state_data:
-            print_paramters(state_data)
-            districts_data = data1[st]['districtData']
-            districts = [districts_data.index(x) for x in districts_data if district in x['district'].lower()]
+        if len(states) == 0:
+            abort('No such state found!')
 
-            for dist in districts:
-                district_data = districts_data[dist]
-                print(f"\n{districts.index(dist)+1}) DISTRICT NAME: {district_data['district']}")
-                print_paramters(district_data)
-        else:
-            pass
+        for st in states:
+            state_code = data1[st]['statecode']
+            print(f"\n*** STATE NAME : {data1[st]['state']} ***")
+            state_data = data2[state_code].get('total')
+
+            if state_data:
+                print_paramters(state_data)
+                districts_data = data1[st]['districtData']
+                districts = [districts_data.index(
+                    x) for x in districts_data if district in x['district'].lower()]
+
+                for dist in districts:
+                    district_data = districts_data[dist]
+                    print(
+                        f"\n{districts.index(dist)+1}) DISTRICT NAME: {district_data['district']}")
+                    print_paramters(district_data)
+            else:
+                pass
+
