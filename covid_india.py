@@ -21,7 +21,7 @@ def print_paramters(data):
     deceased = data.get('deceased') if data.get('deceased') else 'NA'
     tested = data.get('tested') if data.get('tested') else 'NA'
 
-    print(f"\nACTIVE cases : {active}\nTESTED cases : {tested}\nCONFIRMED cases : {confirmed}\nRECOVERED cases : {recovered}\nDECEASED cases : {deceased}\n")
+    print(f"\nTESTED cases : {tested}\nACTIVE cases : {active}\nCONFIRMED cases : {confirmed}\nRECOVERED cases : {recovered}\nDECEASED cases : {deceased}\n")
 
 if __name__ == '__main__':
     # GET data from API:
