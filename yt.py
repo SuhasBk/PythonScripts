@@ -10,46 +10,37 @@ if len(sys.argv[1:])==0:
 else:
     search_term = ' '.join(sys.argv[1:])
 
-headers = {'User-Agent':UserAgent().random}
+print("Searching... Please wait...")
 
 try:
-    r = requests.get("http://youtube.com/results?search_query=" + '+'.join(search_term.split()))
+    session = requests.Session()
+    headers = {'User-Agent': UserAgent().random}
+    session.headers.update(headers)
+    r = session.get("http://youtube.com/results?search_query=" + '+'.join(search_term.split()))
 except requests.HTTPError as err:
     print(err)
     exit()
 
-print("Searching....")
 s = BeautifulSoup(r.text, 'html.parser')
-l = s.findAll('a',{'class':'yt-uix-tile-link yt-ui-ellipsis yt-ui-ellipsis-2 yt-uix-sessionlink spf-link','rel':'spf-prefetch'})
 
-urls = []
-titles = []
-durations = []
-uploaded = []
-views = []
-uploaders = []
+data = str(s.findAll('script')[26])
+bundle = re.findall(r'accessibilityData\":\{\"label\":\"(.{10,200}) views\"\}\}\}',data)
 
-for i in l:
-    try:
-        urls.append('http://youtube.com'+i.get('href'))
-        titles.append(i.text)
-        durations.append(re.findall('\w+:\w+',i.parent.text)[0])
-        meta = i.parent.parent.find('ul',{'class':'yt-lockup-meta-info'}).findAll('li')
-        uploaded.append(meta[0].text)
-        views.append(meta[1].text)
-        uploaders.append(i.parent.parent.find('div',{'class':"yt-lockup-byline"}).text)
-    except:
-        pass
+video_ids = re.findall(r'\"/watch\?v=(.{11})\"', data)
+urls = list(map(lambda id : "https://youtube.com/watch?v="+id,video_ids))
+
+titles = [re.findall(r'(.*) by', i)[0] for i in bundle]
+uploaded = [re.findall(r'by .* (.* .*) ago', i)[0] for i in bundle]
+durations = [re.findall(r'ago (.*) .*', i)[0] for i in bundle]
+views = [re.findall(r'ago .* (.*)', i)[0] for i in bundle]
+uploaders = [re.findall(r'by (.*) .* .* ago', i)[0] for i in bundle]
 
 for i,t,up,d,v,ur,us in zip(range(5),titles,uploaded,durations,views,urls,uploaders):
-    try:
-        p = requests.get(ur)
-        q = BeautifulSoup(p.text,'html.parser')
-        likes = q.find('button',{'title':'I like this'}).text
-        dislikes = q.find('button',{'title':'I dislike this'}).text
-        print('<<< '+str(i)+' >>> : '+t+'\nYouTube URL\t:\t'+ur+'\nUPLOADED\t:\t'+up+'\nDURATION\t:\t'+d+'\nVIEWS\t\t:\t'+v+'\nLIKES\t\t:\t'+likes+'\nDISLIKES\t:\t'+dislikes+'\nUPLOADER\t:\t'+us+'\n')
-    except:
-        pass
+    p = session.get(ur)
+    q = BeautifulSoup(p.text,'html.parser')
+    likes = re.findall(r'{\"accessibilityData\":\{\"label\":\"([0-9]+(,[0-9]+)*) likes',str(q))[0][0]
+    dislikes = re.findall(r'{\"accessibilityData\":\{\"label\":\"([0-9]+(,[0-9]+)*) dislikes',str(q))[0][0]
+    print('<<< '+str(i)+' >>> : '+t+'\nYouTube URL\t:\t'+ur+'\nUPLOADED\t:\t'+up+'\nDURATION\t:\t'+d+'\nVIEWS\t\t:\t'+v+'\nLIKES\t\t:\t'+likes+'\nDISLIKES\t:\t'+dislikes+'\nUPLOADER\t:\t'+us+'\n')
 
 
 while True:
