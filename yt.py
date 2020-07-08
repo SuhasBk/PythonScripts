@@ -38,9 +38,13 @@ uploaders = [re.findall(r'by (.*) .* .* ago', i)[0] for i in bundle]
 for i,t,up,d,v,ur,us in zip(range(5),titles,uploaded,durations,views,urls,uploaders):
     p = session.get(ur)
     q = BeautifulSoup(p.text,'html.parser')
-    likes = re.findall(r'{\"accessibilityData\":\{\"label\":\"([0-9]+(,[0-9]+)*) likes',str(q))[0][0]
-    dislikes = re.findall(r'{\"accessibilityData\":\{\"label\":\"([0-9]+(,[0-9]+)*) dislikes',str(q))[0][0]
-    print('<<< '+str(i)+' >>> : '+t+'\nYouTube URL\t:\t'+ur+'\nUPLOADED\t:\t'+up+'\nDURATION\t:\t'+d+'\nVIEWS\t\t:\t'+v+'\nLIKES\t\t:\t'+likes+'\nDISLIKES\t:\t'+dislikes+'\nUPLOADER\t:\t'+us+'\n')
+    try:
+        likes = re.findall(r'{\"accessibilityData\":\{\"label\":\"([0-9]+(,[0-9]+)*) likes',str(q))[0][0]
+        dislikes = re.findall(r'{\"accessibilityData\":\{\"label\":\"([0-9]+(,[0-9]+)*) dislikes',str(q))[0][0]
+    except IndexError:
+        likes = 'NA'
+        dislikes = 'NA'
+    print('<<< ',str(i),' >>> : ',t,'\nYouTube URL\t:\t',ur,'\nUPLOADED\t:\t',up,'\nDURATION\t:\t',d,'\nVIEWS\t\t:\t',v,'\nLIKES\t\t:\t',likes,'\nDISLIKES\t:\t',dislikes,'\nUPLOADER\t:\t',us,'\n')
 
 
 while True:
