@@ -7,7 +7,7 @@ if sys.platform=='linux':
 else:
     ROOT_DIR = r'E:\tv_movies\series'
 
-file_filter = lambda x: '.srt' not in x and '.txt' not in x and '.unwanted' not in x
+file_filter = lambda x: '.srt' not in x and '.txt' not in x and '.unwanted' not in x and '.parts' not in x
     
 series_list = list(map( lambda x : os.path.join(ROOT_DIR,x),os.listdir(ROOT_DIR)))
 series_list = sorted(list(filter(lambda x : os.path.isdir(x),series_list)))
