@@ -4,7 +4,6 @@ import sys
 import shutil
 import time
 import re
-import glob
 from threading import Thread
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
@@ -73,10 +72,16 @@ class Subtitles:
         contents = os.listdir(self.target)
         contents = list(filter(lambda x : '.zip' in x,contents))
 
+        destination = input("\nEnter the target path to store the subtitle (leave blank for current directory)")
+
+        while not os.path.exists(destination):
+            destination = input("The path does not exists... Try Again...")
+
         for archive in contents:
-            shutil.unpack_archive(archive)
+            shutil.unpack_archive(archive,destination)
             os.remove(archive)
-            os.remove(glob.glob("*.nfo")[0])
+        
+        print("Your subtitle is ready at : ",destination)
 
 def setup():
     global srt
@@ -93,8 +98,8 @@ if __name__ == '__main__':
         init_thread.start()
 
         title = input("Enter the name of the series/movie:\n> ")
-        season = input("Enter the season number (applicable to series only, leave blank otherwise)\n> ")
-        episode = input("Enter the episode number (applicable to series only, leave blank otherwise)\n> ")
+        season = input("Enter the SEASON number (applicable to series only, leave blank otherwise)\n> ")
+        episode = input("Enter the EPISODE number (applicable to series only, leave blank otherwise)\n> ")
 
         if init_thread.is_alive():
             init_thread.join()
