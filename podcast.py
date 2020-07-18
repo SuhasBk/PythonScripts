@@ -1,34 +1,45 @@
 #!/usr/bin/python3
-import selenium,sys,time
-from colorama import Fore,Back,Style
+import os
+import sys
+import time
 from threading import Thread
+import selenium
+from colorama import Back, Fore, Style
 from selenium import webdriver
-from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.firefox.options import Options
+
 
 class GPod:
     def __init__(self):
         options = Options()
         options.headless = True
 
-        if 'linux' in sys.platform:
-            if len(sys.argv[1:]) >= 1:
-                print("Debug mode on...")
-                self.browser = webdriver.Firefox(service_log_path='/dev/null')
-            else:
-                self.browser = webdriver.Firefox(options=options,service_log_path='/dev/null')
+        if len(sys.argv[1:]) >= 1:
+            print("Debug mode on...")
+            self.browser = webdriver.Firefox(service_log_path=os.path.devnull)
         else:
-            if len(sys.argv[1:]) >= 1:
-                print("Debug mode on...")
-                self.browser = webdriver.Firefox(service_log_path='NUL')
-            else:
-                self.browser = webdriver.Firefox(options=options,service_log_path='NUL')
+            self.browser = webdriver.Firefox(options=options,service_log_path=os.path.devnull)
+        
+    def choose_class(self,classes):
+        class_element = None
+
+        for cls in classes:
+            try:
+                class_element = self.browser.find_element_by_class_name(cls)
+            except selenium.common.exceptions.NoSuchElementException:
+                pass
+
+        if class_element == None:
+            raise selenium.common.exceptions.NoSuchElementException
+
+        return class_element
 
     def search(self,pname):
         self.url = f"http://podcasts.google.com/?q={pname}"
         self.browser.get(self.url)        
         time.sleep(2)
-        self.browser.find_element_by_class_name("YJdYTd").click()
+        self.choose_class(["ugPjk","YJdYTd"]).click()
         time.sleep(3)
 
         self.browser.execute_script("window.scrollTo(0, document.body.scrollHeight);")
@@ -48,21 +59,7 @@ class GPod:
         ch = int(input("\nEnter the episode number you want to listen to...\n> "))
         self.browser.execute_script("arguments[0].click()",episodes[ch-1])
         time.sleep(3)
-        self.player()
-    
-    def choose_class(self,classes):
-        element_class = None
-
-        for cls in classes:
-            try:
-                element_class = self.browser.find_element_by_class_name(cls)
-            except selenium.common.exceptions.NoSuchElementException:
-                pass
-        if element_class == None:
-            raise selenium.common.exceptions.NoSuchElementException
-
-        return element_class
-            
+        self.player()            
 
     def time_left(self):
         print("\n"+self.browser.find_elements_by_class_name('MBPL8b')[1].text+"\n")
@@ -98,13 +95,11 @@ def init():
 if __name__ == '__main__':
     try:
         gp = None
-        
         t = Thread(target=init)
         t.start()
         pname = input("Enter the name of the podcast...\n> ")
         if t.is_alive():
             t.join()
-
         gp.search(pname)
     except Exception as e:
         print(e)
