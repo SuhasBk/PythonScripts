@@ -2,12 +2,13 @@
 import requests
 import sys
 import random
+import time
 from bs4 import BeautifulSoup
 from subprocess import Popen, PIPE
 from fake_useragent import UserAgent
 import selenium
 from selenium import webdriver
-from selenium.webdriver.firefox.options import Options
+from selenium.webdriver.chrome.options import Options
 from threading import Thread
 
 browser = None
@@ -20,7 +21,7 @@ def init():
     op = Options()
     op.headless = True
     log_path = "/dev/null" if 'linux' in sys.platform.lower() else 'NUL'
-    browser = webdriver.Firefox(options=op, service_log_path=log_path)
+    browser = webdriver.Chrome(options=op, service_log_path=log_path)
 
 def choose_mirror():
     global mirrors
