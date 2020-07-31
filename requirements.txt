@@ -3,7 +3,6 @@ requests
 youtube-dl
 selenium
 pyttsx3
-pygame
 flask
 flask-wtf
 flask-sqlalchemy
@@ -21,3 +20,4 @@ clipboard
 PyPDF2
 fake-useragent
 virtualenv
+pyfiglet

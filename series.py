@@ -1,9 +1,11 @@
 #!/usr/bin/python3
-from subprocess import Popen,PIPE
+from open_apps import start
 import os,sys
 
 if sys.platform=='linux':
     ROOT_DIR = '/mnt/Universe/tv_movies/series'
+elif sys.platform == 'darwin':
+    ROOT_DIR = '/Users/gandalf/Movies/TV'
 else:
     ROOT_DIR = r'E:\tv_movies\series'
 
@@ -42,9 +44,9 @@ if os.path.isdir(season):
     
     if os.path.isdir(episode):
         fname = list ( filter ( file_filter, sorted(os.listdir(episode)) ) )
-        Popen(["vlc",fname[0]],stdout=PIPE,stderr=PIPE)
+        start("vlc", fname[0])
     else:
-        Popen(["vlc",episode],stdout=PIPE,stderr=PIPE)
+        start("vlc", episode)
 
 elif os.path.isfile(season):
-    Popen(["vlc",season],stdout=PIPE,stderr=PIPE)
+    start("vlc", season)

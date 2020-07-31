@@ -10,6 +10,7 @@ import selenium
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from threading import Thread
+from open_apps import start
 
 browser = None
 mirrors = ["thepiratebay.org", "pirateproxy.ink"]
@@ -86,5 +87,6 @@ if __name__ == '__main__':
     mlink = links[int(ch) - 1].select('span a')[3].get('href')
     print("Opening : ",mlink)
 
-    Popen(["qbittorrent",mlink],stdout=PIPE,stderr=PIPE)
+    # Popen(["qbittorrent",mlink],stdout=PIPE,stderr=PIPE)
+    start("qbittorrent",mlink)
 
