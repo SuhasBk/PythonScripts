@@ -1,6 +1,9 @@
 #!/usr/bin/python3
-import re,os,sys
-from subprocess import PIPE,run,Popen
+import os
+import re
+import sys
+from open_apps import start
+
 import requests
 from bs4 import BeautifulSoup
 from fake_useragent import UserAgent
@@ -14,7 +17,7 @@ print("Searching... Please wait...")
 
 try:
     session = requests.Session()
-    headers = {'User-Agent': UserAgent().random}
+    headers = {'User-Agent': UserAgent(verify_ssl=False).random}
     session.headers.update(headers)
     r = session.get("http://youtube.com/results?search_query=" + '+'.join(search_term.split()))
 except requests.HTTPError as err:
@@ -27,7 +30,7 @@ data = str(s.findAll('script')[26])
 bundle = re.findall(r'accessibilityData\":\{\"label\":\"(.{10,200}) views\"\}\}\}',data)
 
 video_ids = re.findall(r'\"/watch\?v=(.{11})\"', data)
-urls = list(map(lambda id : "https://youtube.com/watch?v="+id,video_ids))
+urls = list(map(lambda id : "http://youtube.com/watch?v="+id,video_ids))
 
 titles = [re.findall(r'(.*) by', i)[0] for i in bundle]
 uploaded = [re.findall(r'by .* (.* .*) ago', i)[0] for i in bundle]
@@ -48,24 +51,33 @@ for i,t,up,d,v,ur,us in zip(range(5),titles,uploaded,durations,views,urls,upload
 
 
 while True:
-    ch=input("Enter the number corresponding to the link (type 'exit' to quit)- \n")
-    if ch=='exit':
-        exit('Bye')
-    for i,j in enumerate(urls):
-        if ch==str(i):
-            print(j)
-            dorv=input("Ok! So, do you want to stream the video (type 'v') or download (type 'd', requires youtube-dl) it?\n")
-            if dorv == 'd':
-                mp3=input("Do you want to download the audio (type 'a') or video (type 'v')?\n")
-                if mp3 == 'v':
-                    print("Downloading video...")
-                    run(["youtube-dl",j],shell=True)
-                else:
-                    print("Downloading audio...")
-                    run(["youtube-dl", "--extract-audio", "--audio-format","mp3",j])
-            elif dorv == 'v':
-                print("Streaming...")
-                try:
-                    Popen(['vlc',j],stderr=PIPE,stdout=PIPE)
-                except FileNotFoundError:
-                    Popen([input("Enter your default media player...\nEx: 'mpv','totem','vlc' : "),j],stderr=PIPE,stdout=PIPE,close_fds=True)
+    video_choice = input("Enter the number corresponding to the link (type 'exit' to quit)- \n")
+
+    if video_choice == 'exit':
+        sys.exit('Ciao!')
+    
+    video_choice = int(video_choice)
+
+    if video_choice >= len(urls):
+        print('\nWrong Input!\n')
+    else:
+        url = urls[video_choice]
+        title = titles[video_choice]
+
+        print(f"\nTitle of video : {title}\nYouTube video URL : {url}")
+
+        download = True if input("\nDo you wish to stream the video (type 'v', requires VLC) or download (type 'd', requires youtube-dl) it?\n").lower().startswith('d') else False
+
+        if download:
+            audio_only = True if input("\nDo you wish to download the audio (type 'a') or video (type 'v')?\n").lower().startswith('a') else False
+
+            if audio_only:
+                print("\nDownloading audio in .webm format by default... if ffmpeg is installed, file will be converted to .mp3 format")
+                start("youtube-dl", "--extract-audio", "--audio-format", "mp3", url)
+            else:
+                print("\nDownloading video as mp4...")
+                start("youtube-dl", url)   
+        else:
+            print("Streaming via VLC...")
+            start('vlc', url)
+                

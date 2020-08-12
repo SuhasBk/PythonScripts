@@ -1,8 +1,9 @@
 #!/usr/bin/python3
 import requests
 from bs4 import BeautifulSoup
+from fake_useragent import UserAgent
 
-r = requests.get("http://dollarrupee.in/")
+r = requests.get("http://dollarrupee.in/", headers={'User-Agent': UserAgent(verify_ssl=False).random})
 s = BeautifulSoup(r.text,'html.parser')
 p = s.select('p > strong')
 rate = float(p[0].text)

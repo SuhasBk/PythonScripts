@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 import random
 from fake_useragent import UserAgent
 
-headers = {'User-Agent':UserAgent().random}
+headers = {'User-Agent': UserAgent(verify_ssl=False).random}
 r = requests.get("https://www.whatismyip.com",headers=headers)
 if not r.ok:
     print(r.text)

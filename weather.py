@@ -6,7 +6,7 @@ from fake_useragent import UserAgent
 country = input("Enter the country:\n> ")
 city = input(f"Enter any city in {country}:\n> ")
 
-headers = {'User-Agent':UserAgent().random}
+headers = {'User-Agent': UserAgent(verify_ssl=False).random}
 r = requests.get(f"https://www.timeanddate.com/weather/{country}/{city}",headers=headers)
 if r.ok:
     s = BeautifulSoup(r.text,'html.parser')

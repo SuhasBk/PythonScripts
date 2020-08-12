@@ -10,8 +10,7 @@ else:
     word = input("Enter the word\n")
 
 try:
-    headers = {'User-Agent':UserAgent().random}
-    r = requests.get("https://dictionary.cambridge.org/dictionary/english/{}".format(word),headers=headers)
+    r = requests.get("https://dictionary.cambridge.org/dictionary/english/{}".format(word), headers={'User-Agent': UserAgent(verify_ssl=False).random})
     s = BeautifulSoup(r.text,'html.parser')
     sections = s.findAll('div',attrs={'class':'sense-body'})
     meaning = ''

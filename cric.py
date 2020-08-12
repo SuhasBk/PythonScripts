@@ -3,10 +3,8 @@ import requests
 from bs4 import BeautifulSoup
 from fake_useragent import UserAgent
 
-ua = UserAgent()
-
 base_url = "https://www.cricbuzz.com"
-headers = {'User-Agent':ua.random}
+headers = {'User-Agent': UserAgent(verify_ssl=False).random}
 
 r = requests.get(base_url+'/cricket-match/live-scores',headers=headers)
 

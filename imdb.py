@@ -2,9 +2,10 @@
 import requests
 from bs4 import BeautifulSoup
 import re,sys
+from fake_useragent import UserAgent
 
 def scrape(url):
-    r = requests.get(url)
+    r = requests.get(url, headers={'User-Agent': UserAgent(verify_ssl=False).random})
     if r.ok:
         s = BeautifulSoup(r.text,'html.parser')
         return s
@@ -21,7 +22,7 @@ def search():
         movie = '+'.join(input("Enter the movie name\n").split())
     print('Connecting to IMDb...')
 
-    s=scrape('https://www.imdb.com/find?q='+movie)
+    s = scrape('https://www.imdb.com/find?q='+movie)
     t = t1 = s.findAll('td',attrs={'class':'result_text'})[:5]
 
     for i,j in enumerate(t,1):

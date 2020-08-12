@@ -3,7 +3,7 @@ import selenium,time,os,sys
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.common.keys import Keys
-from bs4 import *
+from bs4 import BeautifulSoup
 from getpass import getpass
 
 def debug(msg=""):

@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 from fake_useragent import UserAgent
 
 def lyrics(song_name):
-    headers = {'User-Agent': UserAgent().random}
+    headers = {'User-Agent': UserAgent(verify_ssl=False).random}
     r = requests.get("https://search.azlyrics.com/search.php?q="+'+'.join(song_name.split()),headers=headers)
     s = BeautifulSoup(r.text,'html.parser')
     td = s.findAll('td',attrs={'class':'text-left visitedlyr'})
@@ -31,7 +31,7 @@ def lyrics(song_name):
 
     for i,j in enumerate(res):
         if choice==str(i):
-            q = requests.get(j,headers={'user-agent':'MyApp'})
+            q = requests.get(j,headers=headers)
             s = BeautifulSoup(q.text,'html.parser')
             l = s.find('div',attrs={'class':'col-xs-12 col-lg-8 text-center'})
             try:

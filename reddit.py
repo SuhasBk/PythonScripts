@@ -13,7 +13,8 @@ def login():
     passwd = getpass("Enter the password (hidden)\n")
     user = {'user':username,'passwd':passwd,'api_type':'json'}
     s = requests.Session()
-    s.headers.update({'User-Agent':UserAgent().random})
+    headers = {'User-Agent': UserAgent(verify_ssl=False).random}
+    s.headers.update(headers)
     s.post('https://reddit.com/api/login',data=user)
     sess.append(s)
 

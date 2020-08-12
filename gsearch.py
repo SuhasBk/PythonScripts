@@ -8,7 +8,7 @@ if len(sys.argv[1:])==0:
 else:
     search_term = ' '.join(sys.argv[1:])
 
-headers = {'User-Agent':UserAgent().random}
+headers = {'User-Agent': UserAgent(verify_ssl=False).random}
 r = requests.get("https://google.com/search?q={}".format(search_term),headers=headers)
 
 if not r.ok:

@@ -11,7 +11,7 @@ try:
 except:
     city = input("Enter any city in the world:\n> ")
 
-headers = {'User-Agent':UserAgent().random}
+headers = {'User-Agent': UserAgent(verify_ssl=False).random}
 
 r = requests.post("https://worldtimeserver.com/search.aspx?searchfor={}".format(city),headers=headers)
 if r.ok != True:

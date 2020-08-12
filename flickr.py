@@ -7,7 +7,7 @@ import shutil
 from bs4 import BeautifulSoup
 from fake_useragent import UserAgent
 
-headers = {'User-Agent':UserAgent().random}
+headers = {'User-Agent': UserAgent(verify_ssl=False).random}
 
 session = requests.Session()
 

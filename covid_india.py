@@ -2,14 +2,15 @@
 import requests
 import sys
 from threading import Thread
+from fake_useragent import UserAgent
 
 def abort(msg):
     sys.exit(msg)
 
 def fetch():
     global data1, data2
-    api1 = requests.get("https://api.covid19india.org/v2/state_district_wise.json")
-    api2 = requests.get("https://api.covid19india.org/v3/data.json")
+    api1 = requests.get("https://api.covid19india.org/v2/state_district_wise.json", headers=headers)
+    api2 = requests.get("https://api.covid19india.org/v3/data.json", headers=headers)
 
     data1 = api1.json()
     data2 = api2.json()
@@ -25,6 +26,7 @@ def print_paramters(data):
 
 if __name__ == '__main__':
     # GET data from API:
+    headers = {'User-Agent': UserAgent(verify_ssl=False).random}
     data1 = None
     data2 = None
     t = Thread(target=fetch)

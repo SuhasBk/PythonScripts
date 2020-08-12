@@ -5,12 +5,10 @@ from bs4 import BeautifulSoup
 from fake_useragent import UserAgent
 
 COLLECTIONS = dict()
-ua = UserAgent()
 
 def get_source(url):
     try:
-        headers = {'User-Agent':ua.random}
-        r = requests.get(url,headers=headers)
+        r = requests.get(url, headers={'User-Agent': UserAgent(verify_ssl=False).random})
         if r.ok:
             return r.text
         else:
