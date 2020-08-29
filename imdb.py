@@ -1,11 +1,10 @@
-#!/usr/bin/python3
+#!/usr/local/bin/python3
 import requests
 from bs4 import BeautifulSoup
 import re,sys
-from fake_useragent import UserAgent
 
 def scrape(url):
-    r = requests.get(url, headers={'User-Agent': UserAgent(verify_ssl=False).random})
+    r = requests.get(url, headers={'User-Agent': 'masterbyte'})
     if r.ok:
         s = BeautifulSoup(r.text,'html.parser')
         return s

@@ -1,8 +1,7 @@
-#!/usr/bin/python3
+#!/usr/local/bin/python3
 import requests
 import sys
 from threading import Thread
-from fake_useragent import UserAgent
 
 def abort(msg):
     sys.exit(msg)
@@ -26,7 +25,7 @@ def print_paramters(data):
 
 if __name__ == '__main__':
     # GET data from API:
-    headers = {'User-Agent': UserAgent(verify_ssl=False).random}
+    headers = {'User-Agent': 'masterbyte'}
     data1 = None
     data2 = None
     t = Thread(target=fetch)

@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/local/bin/python3
 import selenium,time,os,sys
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options

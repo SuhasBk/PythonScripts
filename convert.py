@@ -1,9 +1,8 @@
-#!/usr/bin/python3
+#!/usr/local/bin/python3
 import requests
 from bs4 import BeautifulSoup
-from fake_useragent import UserAgent
 
-r = requests.get("http://dollarrupee.in/", headers={'User-Agent': UserAgent(verify_ssl=False).random})
+r = requests.get("http://dollarrupee.in/", headers={'User-Agent': 'masterbyte'})
 s = BeautifulSoup(r.text,'html.parser')
 p = s.select('p > strong')
 rate = float(p[0].text)
@@ -16,7 +15,7 @@ ch = input("Please enter the choice:\n> ")
 amt = float(input("Enter the amount : ").replace(',',''))
 
 if ch == '1':
-    print("{} in USD equals {} in INR".format(amt,round(amt*rate)))
+    print("{} in USD equals {} in INR".format(amt,round(amt*rate, 4)))
 
 elif ch == '2':
-    print("{} in INR equals {} in USD".format(amt,round(amt/rate)))
+    print("{} in INR equals {} in USD".format(amt,round(amt/rate, 4)))

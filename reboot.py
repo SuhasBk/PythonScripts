@@ -1,15 +1,14 @@
-#!/usr/bin/python3
+#!/usr/local/bin/python3
 from getpass import getpass
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 import time,os,sys
 from selenium.webdriver.firefox.options import Options
-#from selenium.webdriver.chrome.options import Options
 
 options=Options()
 options.headless=True
-path = '/dev/null' if 'linux' in sys.platform else 'NUL'
-b = webdriver.Firefox(options=options, service_log_path=path) if len(sys.argv[1:]) < 1 else webdriver.Firefox(service_log_path=path)
+log_path = os.path.devnull
+b = webdriver.Firefox(options=options, service_log_path=log_path) if len(sys.argv[1:]) < 1 else webdriver.Firefox(service_log_path=log_path)
 
 try:
     b.get('http://192.168.0.1')

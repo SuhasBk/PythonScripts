@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/local/bin/python3
 import requests
 import sys
 import random
@@ -14,7 +14,7 @@ from open_apps import start
 
 browser = None
 mirrors = ["thepiratebay.org", "pirateproxy.ink"]
-headers = {'User-Agent': UserAgent(verify_ssl=False).random}
+headers = {'User-Agent': 'masterbyte'}
 domain = ""
 
 def init():

@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/local/bin/python3
 import time
 import pyttsx3
 import speech_recognition as sr

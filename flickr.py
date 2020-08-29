@@ -1,13 +1,12 @@
-#!/usr/bin/python3
+#!/usr/local/bin/python3
 import requests
 import sys
 import webbrowser
 import os
 import shutil
 from bs4 import BeautifulSoup
-from fake_useragent import UserAgent
 
-headers = {'User-Agent': UserAgent(verify_ssl=False).random}
+headers = {'User-Agent': 'masterbyte'}
 
 session = requests.Session()
 
@@ -22,8 +21,10 @@ except OSError:
     pass
 
 def view(path):
-    if sys.platform.startswith("linux") or sys.platform == "darwin":
+    if sys.platform.startswith("linux"):
         os.system("xdg-open "+path)
+    elif sys.platform == "darwin":
+        os.system("open "+path)
     else:
         webbrowser.open(path)
 

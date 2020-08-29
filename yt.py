@@ -2,11 +2,9 @@
 import os
 import re
 import sys
-from open_apps import start
-
 import requests
 from bs4 import BeautifulSoup
-from fake_useragent import UserAgent
+from open_apps import start
 
 if len(sys.argv[1:])==0:
     search_term = ' '.join(input("Enter the search term\n").split())
@@ -17,7 +15,7 @@ print("Searching... Please wait...")
 
 try:
     session = requests.Session()
-    headers = {'User-Agent': UserAgent(verify_ssl=False).random}
+    headers = {'User-Agent': 'masterbyte'}
     session.headers.update(headers)
     r = session.get("http://youtube.com/results?search_query=" + '+'.join(search_term.split()))
 except requests.HTTPError as err:

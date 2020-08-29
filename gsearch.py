@@ -1,14 +1,13 @@
-#!/usr/bin/python3
+#!/usr/local/bin/python3
 import requests,sys,webbrowser,os,re
 from bs4 import BeautifulSoup
-from fake_useragent import UserAgent
 
 if len(sys.argv[1:])==0:
     search_term = ' '.join(input("Enter the search term\n").split())
 else:
     search_term = ' '.join(sys.argv[1:])
 
-headers = {'User-Agent': UserAgent(verify_ssl=False).random}
+headers = {'User-Agent': 'masterbyte'}
 r = requests.get("https://google.com/search?q={}".format(search_term),headers=headers)
 
 if not r.ok:

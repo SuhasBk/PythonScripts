@@ -1,14 +1,13 @@
-#!/usr/bin/python3
+#!/usr/local/bin/python3
 import requests,sys,webbrowser,re,random
 from threading import Thread
 from bs4 import BeautifulSoup
-from fake_useragent import UserAgent
 
 COLLECTIONS = dict()
 
 def get_source(url):
     try:
-        r = requests.get(url, headers={'User-Agent': UserAgent(verify_ssl=False).random})
+        r = requests.get(url, headers={'User-Agent': 'masterbyte'})
         if r.ok:
             return r.text
         else:

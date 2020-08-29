@@ -1,11 +1,10 @@
-#!/usr/bin/python3
+#!/usr/local/bin/python3
 import requests
 import re,sys
 from bs4 import BeautifulSoup
-from fake_useragent import UserAgent
 
 def lyrics(song_name):
-    headers = {'User-Agent': UserAgent(verify_ssl=False).random}
+    headers = {'User-Agent': 'masterbyte'}
     r = requests.get("https://search.azlyrics.com/search.php?q="+'+'.join(song_name.split()),headers=headers)
     s = BeautifulSoup(r.text,'html.parser')
     td = s.findAll('td',attrs={'class':'text-left visitedlyr'})

@@ -1,12 +1,14 @@
-#!/usr/bin/python3
+#!/usr/local/bin/python3
 import requests
 from bs4 import BeautifulSoup
-from fake_useragent import UserAgent
 
 base_url = "https://www.cricbuzz.com"
-headers = {'User-Agent': UserAgent(verify_ssl=False).random}
+headers = {'User-Agent': 'masterbyte'}
 
-r = requests.get(base_url+'/cricket-match/live-scores',headers=headers)
+sess = requests.Session()
+sess.headers.update(headers)
+
+r = sess.get(base_url+'/cricket-match/live-scores')
 
 s = BeautifulSoup(r.text,'html.parser')
 
@@ -25,11 +27,11 @@ ch = input("\nEnter the match number\n> ")
 
 for i,j in enumerate(live1,1):
     if ch == str(i):
-        r = requests.get(base_url+j.get('href'),headers=headers)
+        r = sess.get(base_url+j.get('href'))
         s = BeautifulSoup(r.text,'html.parser').find('div',attrs={'class':'cb-min-lv'})
         live = s.text.split('Recent')[0]
         a = BeautifulSoup(r.text,'html.parser').findAll('a',attrs={'class':'cb-nav-tab'})
-        r = requests.get(base_url+a[1].get('href'),headers=headers)
+        r = sess.get(base_url+a[1].get('href'))
         p = BeautifulSoup(r.text,'html.parser').findAll('div',attrs={'class':'cb-col-67'})
 
         print("\nMATCH INFO :\n")

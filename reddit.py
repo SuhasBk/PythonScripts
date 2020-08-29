@@ -1,9 +1,8 @@
-#!/usr/bin/python3
+#!/usr/local/bin/python3
 import requests
 import os,time,sys
 from getpass import getpass
 from subprocess import run,PIPE
-from fake_useragent import UserAgent
 
 sess = []
 
@@ -13,7 +12,7 @@ def login():
     passwd = getpass("Enter the password (hidden)\n")
     user = {'user':username,'passwd':passwd,'api_type':'json'}
     s = requests.Session()
-    headers = {'User-Agent': UserAgent(verify_ssl=False).random}
+    headers = {'User-Agent': 'masterbyte'}
     s.headers.update(headers)
     s.post('https://reddit.com/api/login',data=user)
     sess.append(s)
