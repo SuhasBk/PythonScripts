@@ -8,7 +8,7 @@ from subprocess import Popen, PIPE
 from fake_useragent import UserAgent
 import selenium
 from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.firefox.options import Options
 from threading import Thread
 from open_apps import start
 
@@ -22,7 +22,7 @@ def init():
     op = Options()
     op.headless = True
     log_path = "NUL" if sys.platform.startswith('win') else "/dev/null"
-    browser = webdriver.Chrome(options=op, service_log_path=log_path)
+    browser = webdriver.Firefox(options=op, service_log_path=log_path)
 
 def choose_mirror():
     global mirrors
