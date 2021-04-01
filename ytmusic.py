@@ -78,7 +78,8 @@ class YTMusic:
         # self.browser.find_element_by_xpath('//*[@id="header"]/ytmusic-immersive-header-renderer/div/div/div/div[2]/div/div/yt-button-renderer[2]').find_element_by_tag_name('a').click()
 
         # Shuffle artist songs
-        shuffle_button = self.browser.find_element_by_xpath('//*[@id="header"]/ytmusic-immersive-header-renderer/div/div/div/div[2]/div/div/yt-button-renderer[1]/a')
+        # shuffle_button = self.browser.find_element_by_xpath('//*[@id="header"]/ytmusic-immersive-header-renderer/div/div/div/div[2]/div/div/yt-button-renderer[1]/a')
+        shuffle_button = self.browser.find_element_by_css_selector('paper-button[aria-label="Shuffle"]')
         try:
             shuffle_button.click()
         except:
