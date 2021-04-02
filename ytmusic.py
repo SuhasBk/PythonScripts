@@ -78,7 +78,6 @@ class YTMusic:
         # self.browser.find_element_by_xpath('//*[@id="header"]/ytmusic-immersive-header-renderer/div/div/div/div[2]/div/div/yt-button-renderer[2]').find_element_by_tag_name('a').click()
 
         # Shuffle artist songs
-        # shuffle_button = self.browser.find_element_by_xpath('//*[@id="header"]/ytmusic-immersive-header-renderer/div/div/div/div[2]/div/div/yt-button-renderer[1]/a')
         shuffle_button = self.browser.find_element_by_css_selector('paper-button[aria-label="Shuffle"]')
         try:
             shuffle_button.click()
@@ -86,13 +85,13 @@ class YTMusic:
             self.browser.execute_script("arguments[0].click()", shuffle_button)
             
     def prev_song_or_rewind(self):
-        self.browser.find_element_by_xpath('//*[@id="left-controls"]/div/paper-icon-button[1]').click()
+        self.browser.find_element_by_css_selector('tp-yt-paper-icon-button[title="Previous song"]').click()
     
     def play_or_pause(self):
         self.browser.find_element_by_xpath('//*[@id="play-pause-button"]').click()
     
     def next_song(self):
-        self.browser.find_element_by_xpath('//*[@id="left-controls"]/div/paper-icon-button[3]').click()
+        self.browser.find_element_by_css_selector('tp-yt-paper-icon-button[title="Next song"]').click()
     
     def print_track_info(self):
         track_name = self.browser.find_element_by_xpath('//*[@id="layout"]/ytmusic-player-bar/div[2]/div[1]/yt-formatted-string').text.strip()
@@ -186,9 +185,9 @@ if __name__ == '__main__':
 
         while True:
             for index in options:
-                print(f"{index}: {options[index]['desc']}")
+                print(f"\n{index}: {options[index]['desc']}")
 
-            choice = input("Enter your choice:\n> ")
+            choice = input("\nEnter your choice:\n> ")
 
             if not choice.isnumeric or choice not in options:
                 print("\nBad input\n")
