@@ -13,7 +13,7 @@ from msedge.selenium_tools import Edge, EdgeOptions
 class YTMusic:
 
     def __init__(self, args):
-        USER_BROWSER = args.browser
+        USER_BROWSER = args.browser.lower()
         DEBUG_MODE = args.debug
 
         if USER_BROWSER == 'firefox':

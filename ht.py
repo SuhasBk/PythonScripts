@@ -23,6 +23,8 @@
 
 # much elegant:
 
+import sys
+import os
 import requests
 import shutil
 from datetime import date
@@ -38,7 +40,14 @@ file_download_url = f"https://epaper.hindustantimes.com/Home/Download?Filename={
 file_name = str(date)+'.pdf'
 
 with session.get(file_download_url, stream=True) as r:
-    with open(str(date)+'.pdf', 'wb') as f:
+    with open(str(date)+'.pdf', 'wb+') as f:
         shutil.copyfileobj(r.raw, f, length=16*1024*1024)
 
 session.close()
+
+if sys.platform == 'darwin':
+    os.system(f"open {file_name}")
+elif sys.platform.startswith('linux'):
+    os.system(f"xdg-open {file_name}")
+else:
+    os.startfile(file_name)
