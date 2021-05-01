@@ -33,7 +33,7 @@ date = date.today()
 
 session = requests.Session()
 
-file_name = session.get(f"https://epaper.hindustantimes.com/Home/downloadpdfedition_page?id=102&type=5&Date={date.day}%2F{str(date.month).zfill(2)}%2F{date.year}").json().get('FileName')
+file_name = session.get(f"https://epaper.hindustantimes.com/Home/downloadpdfedition_page?id=102&type=5&Date={str(date.day).zfill(2)}%2F{str(date.month).zfill(2)}%2F{date.year}").json().get('FileName')
 
 file_download_url = f"https://epaper.hindustantimes.com/Home/Download?Filename={file_name}"
 
