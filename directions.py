@@ -8,5 +8,6 @@ if len(sys.argv[1:]) != 2:
 else:
     src = sys.argv[1]
     dest = sys.argv[2]
-
-webbrowser.open("https://maps.google.com/maps?saddr={}&daddr={}".format(src,dest))
+url = "https://maps.google.com/maps?saddr={}&daddr={}".format(src, dest)
+print(url)
+webbrowser.open(url)

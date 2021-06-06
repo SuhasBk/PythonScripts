@@ -16,7 +16,7 @@ class YTMusic:
         USER_BROWSER = args.browser.lower()
         DEBUG_MODE = args.debug
 
-        if USER_BROWSER == 'firefox':
+        if USER_BROWSER.startswith('firefox'):
             opt = FireOptions()
             opt.headless = True
 
@@ -29,7 +29,7 @@ class YTMusic:
             except IndexError:
                 self.browser = webdriver.Firefox(options=opt,service_log_path=os.path.devnull)
 
-        elif USER_BROWSER == 'chrome':
+        elif USER_BROWSER.startswith('chrome'):
             opt = ChromeOptions()
             opt.add_argument("--log-level=3")
             opt.add_argument("--window-size=1366,768")
@@ -41,7 +41,7 @@ class YTMusic:
         
             self.browser = webdriver.Chrome(options=opt,service_log_path=os.path.devnull)
 
-        elif USER_BROWSER == 'edge':
+        elif USER_BROWSER.startswith('microsoft'):
             opt = EdgeOptions()
             opt.use_chromium = True
 
@@ -64,21 +64,25 @@ class YTMusic:
         # get results
         self.browser.find_element_by_xpath('//*[@id="placeholder"]').click()
         self.browser.find_elements_by_xpath('//*[@id="input"]')[1].send_keys(artist + Keys.ENTER)
-        time.sleep(3)
+        time.sleep(2)
 
-        # sort by artist
-        self.browser.find_element_by_xpath("//*[@class='yt-simple-endpoint style-scope ytmusic-chip-cloud-chip-renderer'][@title='Show artist results']").click()
-        time.sleep(3)
+        try:
+            # sort by artist
+            self.browser.find_element_by_xpath("//*[@class='yt-simple-endpoint style-scope ytmusic-chip-cloud-chip-renderer'][@title='Show artist results']").click()
+            time.sleep(2)
 
-        # select first artist
-        self.browser.find_elements_by_xpath("//*[@class='yt-simple-endpoint style-scope ytmusic-responsive-list-item-renderer']")[0].click()
-        time.sleep(3)
+            # select first artist
+            self.browser.find_elements_by_xpath("//*[@class='yt-simple-endpoint style-scope ytmusic-responsive-list-item-renderer']")[0].click()
+        # if not a famous artist, pick top result
+        except:
+            self.browser.find_element_by_css_selector('[height-style_="MUSIC_RESPONSIVE_LIST_ITEM_HEIGHT_TALL"] a').click()
 
         # blast the fuckin' radio!
         # self.browser.find_element_by_xpath('//*[@id="header"]/ytmusic-immersive-header-renderer/div/div/div/div[2]/div/div/yt-button-renderer[2]').find_element_by_tag_name('a').click()
 
         # Shuffle artist songs
-        shuffle_button = self.browser.find_element_by_css_selector('paper-button[aria-label="Shuffle"]')
+        time.sleep(2)
+        shuffle_button = self.browser.find_element_by_css_selector('[aria-label="Shuffle"]')
         try:
             shuffle_button.click()
         except:
@@ -94,12 +98,15 @@ class YTMusic:
         self.browser.find_element_by_css_selector('tp-yt-paper-icon-button[title="Next song"]').click()
     
     def print_track_info(self):
-        track_name = self.browser.find_element_by_xpath('//*[@id="layout"]/ytmusic-player-bar/div[2]/div[1]/yt-formatted-string').text.strip()
-        album_name = self.browser.find_element_by_xpath('//*[@id="layout"]/ytmusic-player-bar/div[2]/div[1]/span/span[2]/yt-formatted-string/a[2]').text.strip()
-        year = self.browser.find_element_by_xpath('//*[@id="layout"]/ytmusic-player-bar/div[2]/div[1]/span/span[2]/yt-formatted-string/span[3]').text.strip()
-        time = self.browser.find_element_by_xpath('//*[@id="left-controls"]/span').text.strip()
+        try:
+            track_name = self.browser.find_element_by_xpath('//*[@id="layout"]/ytmusic-player-bar/div[2]/div[1]/yt-formatted-string').text.strip()
+            album_name = self.browser.find_element_by_xpath('//*[@id="layout"]/ytmusic-player-bar/div[2]/div[1]/span/span[2]/yt-formatted-string/a[2]').text.strip()
+            year = self.browser.find_element_by_xpath('//*[@id="layout"]/ytmusic-player-bar/div[2]/div[1]/span/span[2]/yt-formatted-string/span[3]').text.strip()
+            time = self.browser.find_element_by_xpath('//*[@id="left-controls"]/span').text.strip()
 
-        print(f'\nTrack Name: {track_name}\nAlbum Name: {album_name}\nYear: {year}\nTime: {time}\n')
+            print(f'******\nTrack Name: {track_name}\nAlbum Name: {album_name}\nYear: {year}\nTime: {time}******\n')
+        except:
+            print("\n**🤦‍♂️ ADVERTISEMENT 🤦‍♂️**")
     
     def quit(self):
         self.browser.quit()
@@ -199,13 +206,10 @@ if __name__ == '__main__':
                     options[choice]['op']()
             else:
                 options[choice]['op']()
-
-
     except Exception as e:
         print(e, e.with_traceback)
         if sys_args.debug:
-            debug(ytmusic)
-            
+            debug(ytmusic)    
     finally:
         try:
             ytmusic.browser.quit()
