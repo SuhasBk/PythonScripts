@@ -30,17 +30,13 @@ import shutil
 from datetime import date
 
 date = date.today()
-
+file_name = str(date)+'.pdf'
 session = requests.Session()
 
-file_name = session.get(f"https://epaper.hindustantimes.com/Home/downloadpdfedition_page?id=102&type=5&Date={str(date.day).zfill(2)}%2F{str(date.month).zfill(2)}%2F{date.year}").json().get('FileName')
-
-file_download_url = f"https://epaper.hindustantimes.com/Home/Download?Filename={file_name}"
-
-file_name = str(date)+'.pdf'
+file_download_url = f"https://epaper.hindustantimes.com/Home/Download?id=102&type=5&EditionId=102&Date={str(date.day).zfill(2)}%2F{str(date.month).zfill(2)}%2F{date.year}"
 
 with session.get(file_download_url, stream=True) as r:
-    with open(str(date)+'.pdf', 'wb+') as f:
+    with open(file_name, 'wb+') as f:
         shutil.copyfileobj(r.raw, f, length=16*1024*1024)
 
 session.close()
