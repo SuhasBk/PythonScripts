@@ -4,16 +4,13 @@ import sys
 import random
 import time
 from bs4 import BeautifulSoup
-from subprocess import Popen, PIPE
-from fake_useragent import UserAgent
-import selenium
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
 from threading import Thread
 from open_apps import start
 
 browser = None
-mirrors = ["thepiratebay.org", "pirateproxy.ink"]
+mirrors = []
 headers = {'User-Agent': 'masterbyte'}
 domain = ""
 
@@ -24,6 +21,12 @@ def init():
     log_path = "NUL" if sys.platform.startswith('win') else "/dev/null"
     browser = webdriver.Firefox(options=op, service_log_path=log_path)
 
+def populate_mirrors():
+    global mirrors
+    r = requests.get("https://proxybay.github.io/")
+    s = BeautifulSoup(r.text, 'html.parser')
+    mirrors = list(map(lambda x: x.get('href'), s.findAll('a', {'rel': 'nofollow'})))
+
 def choose_mirror():
     global mirrors
     global domain
@@ -32,14 +35,15 @@ def choose_mirror():
 
     try:
         print(f"\nTrying {mirror} ...")
-        r = requests.get(f"http://{mirror}/search.php?q={goods}", headers=headers, timeout=7)
+        r = requests.get(f"{mirror}/search.php?q={goods}", headers=headers, timeout=7)
         if not r.ok or 'blocked' in r.text or r.text == '':
             raise Exception
         else:
             print(f"\nYay! {mirror} is working ...\n")
             domain = mirror
             return
-    except:
+    except Exception as e:
+        print(e)
         if len(mirrors) > 0:
             print(f"\n{mirror} not working ... Choosing again from : \n{mirrors}")
             choose_mirror()
@@ -57,8 +61,9 @@ if __name__ == '__main__':
     t = Thread(target=init)
     t.start()
 
+    populate_mirrors()
     choose_mirror()
-    base_url = f"http://{domain}"
+    base_url = f"{domain}"
 
     if t.is_alive():
         t.join()
@@ -81,12 +86,13 @@ if __name__ == '__main__':
             time.sleep(0.5)
         except:
             pass
+    
+    while True:
+        ch = input("\nEnter the number...\n> ")
 
-    ch = input("\nEnter the number...\n> ")
+        mlink = links[int(ch) - 1].select('span a')[3].get('href')
+        print("Opening : ",mlink)
 
-    mlink = links[int(ch) - 1].select('span a')[3].get('href')
-    print("Opening : ",mlink)
-
-    # Popen(["qbittorrent",mlink],stdout=PIPE,stderr=PIPE)
-    start("qbittorrent",mlink)
+        # Popen(["qbittorrent",mlink],stdout=PIPE,stderr=PIPE)
+        start("qbittorrent",mlink)
 
