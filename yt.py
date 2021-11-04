@@ -57,10 +57,12 @@ def watch(urls):
 
                 if audio_only:
                     print("\nDownloading audio in .webm format by default... if ffmpeg is installed, file will be converted to .mp3 format")
-                    start("youtube-dl", "--extract-audio", "--audio-format", "mp3", url)
+                    start("youtube-dl", "--no-check-certificate", "--extract-audio", "--audio-format", "mp3", url)
                 else:
                     print("\nDownloading video as mp4...")
-                    start("youtube-dl", url)   
+                    start("youtube-dl", url)
+
+                break   
             else:
                 print("Streaming via VLC...")
                 start('vlc', url)

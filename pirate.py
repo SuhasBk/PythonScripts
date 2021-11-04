@@ -1,4 +1,5 @@
 #!/usr/local/bin/python3
+import os
 import requests
 import sys
 import random
@@ -18,7 +19,7 @@ def init():
     global browser
     op = Options()
     op.headless = True
-    log_path = "NUL" if sys.platform.startswith('win') else "/dev/null"
+    log_path = os.path.devnull
     browser = webdriver.Firefox(options=op, service_log_path=log_path)
 
 def populate_mirrors():

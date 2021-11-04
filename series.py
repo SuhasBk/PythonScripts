@@ -38,15 +38,16 @@ if os.path.isdir(season):
     for z,w in enumerate(episode_list,1):
         print(z,' : ',w)
     
-    ch = int(input("Enter the choice:\n> ")) - 1
+    while True:
+        ch = int(input("Enter the choice:\n> ")) - 1
 
-    episode = os.path.join(season,episode_list[ch])
-    
-    if os.path.isdir(episode):
-        fname = list ( filter ( file_filter, sorted(os.listdir(episode)) ) )
-        start("vlc", fname[0])
-    else:
-        start("vlc", episode)
+        episode = os.path.join(season,episode_list[ch])
+        
+        if os.path.isdir(episode):
+            fname = list ( filter ( file_filter, sorted(os.listdir(episode)) ) )
+            start("vlc", fname[0])
+        else:
+            start("vlc", episode)
 
 elif os.path.isfile(season):
     start("vlc", season)
