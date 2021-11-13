@@ -31,10 +31,9 @@ def populate_mirrors():
 def choose_mirror():
     global mirrors
     global domain
-    mirror = random.choice(mirrors)
-    mirrors.remove(mirror)
 
     try:
+        mirror = mirrors.pop(0)
         print(f"\nTrying {mirror} ...")
         r = requests.get(f"{mirror}/search.php?q={goods}", headers=headers, timeout=7)
         if not r.ok or 'blocked' in r.text or r.text == '':
