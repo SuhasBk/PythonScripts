@@ -21,7 +21,7 @@ pdfs = list(filter(lambda x: x.endswith('.pdf'), contents))
 confirmation = 'n'
 
 while confirmation not in ['y', 'Y']:
-    confirmation = input(f"\nThe final list of PDFs to be merged: \n\n{pdfs}\n\nCONTINUE? ['y'/'Y'] or ADD ANY MORE EXCEPTIONS? ['n'/'N']\n> ")
+    confirmation = input(f"\nThe final list of PDFs to be merged: \n\n{pdfs}\n\nTotal: {len(pdfs)}\n\nCONTINUE? ['y'/'Y'] or ADD ANY MORE EXCEPTIONS? ['n'/'N']\n> ")
 
     if confirmation in ['y', 'Y']:
         file_name = input("\nEnter the name of the merged pdf:\n> ")
