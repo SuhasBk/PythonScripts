@@ -13,6 +13,7 @@ while True:
         word = input("\n\nEnter the word\n")
 
     try:
+        # try this: https://gre.magoosh.com/definitions/conscientiously
         r = requests.get("https://www.lexico.com/definition/{}".format(word), headers={'User-Agent': 'masterbyte'})
         s = BeautifulSoup(r.text, 'html.parser')
         
