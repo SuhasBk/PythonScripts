@@ -13,13 +13,13 @@ while True:
         word = input("\n\nEnter the word\n")
 
     try:
-        # try this: https://gre.magoosh.com/definitions/conscientiously
-        r = requests.get("https://www.lexico.com/definition/{}".format(word), headers={'User-Agent': 'masterbyte'})
+        r = requests.get("https://www.wordnik.com/words/{}".format(word), headers={'User-Agent': 'masterbyte'})
         s = BeautifulSoup(r.text, 'html.parser')
+        print(s.find("div", {'id': 'define'}).text)
         
-        meanings = s.findAll('span',{'class':'ind'})
-        for index, meaning in enumerate(meanings, 1):
-            print(index, ' - ', meaning.text)
+        # meanings = s.findAll('p')
+        # for index, meaning in enumerate(meanings, 1):
+        #     print(index, ' - ', meaning.text.strip())
     except:
         print('No such word in my dictionary...')
     word = None
