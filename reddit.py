@@ -25,12 +25,26 @@ def results(sub):
     for i in range(50):
         data = html['data']['children'][i]['data']
         print(i, ':', data['title'].upper(), '-', data['url'])
-    
+
     if os.uname().sysname.startswith("Darwin"):
+        counter = 0
         while True:
-            ch = int(input("\nEnter your choice:\n> "))
-            url = str(html['data']['children'][ch]['data']['url'])
-            run('open -a "Google Chrome" --args --incognito ' + url, shell=True)
+            user_ch = input("\nEnter your choice:\n> ")
+
+            if user_ch != "":
+                ch = int(user_ch)
+                print(ch, end=' - ')
+                url = str(html['data']['children'][ch]['data']['url'])
+                title = html['data']['children'][ch]['data']['title']
+                counter = ch + 1
+            else:
+                print(counter, end=' - ')
+                url = str(html['data']['children'][counter]['data']['url'])
+                title = html['data']['children'][counter]['data']['title']
+                counter += 1
+
+            print(title)
+            run('open -na "Google Chrome" --args --incognito ' + url, shell=True)
 
 if __name__ == '__main__':
     login()
