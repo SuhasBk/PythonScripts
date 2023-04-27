@@ -2,11 +2,8 @@
 import os
 import requests
 import sys
-import random
 import time
 
-import \
-    selenium.webdriver.firefox.webdriver
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
