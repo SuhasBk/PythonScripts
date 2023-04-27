@@ -4,6 +4,9 @@ import requests
 import sys
 import random
 import time
+
+import \
+    selenium.webdriver.firefox.webdriver
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
@@ -24,7 +27,7 @@ def init():
 
 def populate_mirrors():
     global mirrors
-    r = requests.get("https://proxybay.github.io/")
+    r = requests.get("https://piratebayproxy.net/")
     s = BeautifulSoup(r.text, 'html.parser')
     mirrors = list(map(lambda x: x.get('href'), s.findAll('a', {'rel': 'nofollow'})))
 
@@ -32,10 +35,11 @@ def choose_mirror():
     global mirrors
     global domain
 
+    mirror = None
     try:
         mirror = mirrors.pop(0)
         print(f"\nTrying {mirror} ...")
-        r = requests.get(f"{mirror}/search.php?q={goods}", headers=headers, timeout=7)
+        r = requests.get(f"{mirror}/search/{goods}", headers=headers, timeout=7)
         if not r.ok or 'blocked' in r.text or r.text == '':
             raise Exception
         else:
@@ -49,6 +53,17 @@ def choose_mirror():
             choose_mirror()
         else:
             exit("You have serious bad luck! Bye!")
+
+def debug(*args,**kwargs):
+    while(True):
+        try:
+            cmd=input("Enter the commands BOSS!\n")
+            if cmd=='exit':
+                return
+            exec(cmd)
+        except:
+            print('NOT WORKING!')
+            pass
 
 if __name__ == '__main__':
     try:
@@ -68,21 +83,24 @@ if __name__ == '__main__':
     if t.is_alive():
         t.join()
 
-    browser.get(f"{base_url}/search.php?q={goods}")
+    if not browser:
+        exit('Issue with Selenium setup. Closing...')
+        quit()
+
+    browser.get(f"{base_url}/search/{goods}")
     source = browser.page_source
     browser.quit()
 
     s = BeautifulSoup(source,'html.parser')
-    links = s.select('li[id="st"]')
+    links = s.select('tr:not(.header)')
 
     for link in links[:15]:
         try:
-            print("\n<<< "+str(links.index(link) + 1)+" >>> : TITLE : ",link.select('span a')[2].text)
-            print("TORRENT PAGE URL : ",base_url+link.select('span a')[2].get('href'))
-            print("SIZE : ",link.select('span')[4].text)
-            print("UPLOADED ON : ",link.select('span')[2].text)
-            print("UPLOADED BY : ",link.select('span')[7].text)
-            print("MAGENT LINK : ",link.select('span a')[3].get('href'))
+            torrent_info_loc = link.select('td')[1]
+            print("\n<<< "+str(links.index(link) + 1)+" >>> : TITLE : ", torrent_info_loc.find('a', attrs={'class': 'detLink'}).text)
+            print("TORRENT PAGE URL : ", torrent_info_loc.find('a', attrs={'class': 'detLink'}).get('href'))
+            print("DESCRIPTION : ", torrent_info_loc.find('font', attrs={'class': 'detDesc'}).text)
+            print("MAGENT LINK : ", torrent_info_loc.select('a[href^="magnet"]')[0].get('href'))
             time.sleep(0.5)
         except:
             pass
@@ -90,9 +108,9 @@ if __name__ == '__main__':
     while True:
         ch = input("\nEnter the number...\n> ")
 
-        mlink = links[int(ch) - 1].select('span a')[3].get('href')
-        print("Opening : ",mlink)
+        mlink = links[int(ch) - 1].select('a[href^="magnet"]')[0].get('href')
+        print("Opening : ", mlink)
 
         # Popen(["qbittorrent",mlink],stdout=PIPE,stderr=PIPE)
-        start("qbittorrent",mlink)
+        start("qbittorrent", mlink)
 
